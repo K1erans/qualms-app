@@ -1,0 +1,12 @@
+node_modules/
+.pnpm-store/
+.turbo/
+dist/
+build/
+.svelte-kit/
+coverage/
+*.log
+.DS_Store
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/binaries/qualms-*
+!apps/desktop/src-tauri/binaries/.gitkeep

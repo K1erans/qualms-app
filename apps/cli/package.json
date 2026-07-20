@@ -1,0 +1,46 @@
+{
+  "name": "qualms",
+  "version": "0.0.0",
+  "description": "Turn natural-language QA intent into durable automated tests.",
+  "type": "module",
+  "bin": {
+    "qualms": "./dist/index.js"
+  },
+  "exports": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/K1erans/qualms-app.git",
+    "directory": "apps/cli"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup --config tsup.config.ts",
+    "build:sidecar": "tsup --config tsup.sidecar.config.ts && node scripts/build-sidecar.mjs",
+    "clean": "rm -rf dist coverage",
+    "dev": "tsup --config tsup.config.ts --watch",
+    "format:check": "prettier --check src test scripts tsup*.ts package.json tsconfig.json README.md",
+    "lint": "eslint src test scripts tsup*.ts",
+    "prepack": "tsup --config tsup.config.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qualms/contracts": "workspace:*",
+    "commander": "15.0.0"
+  },
+  "devDependencies": {
+    "@yao-pkg/pkg": "6.21.0",
+    "tsup": "8.5.1"
+  }
+}

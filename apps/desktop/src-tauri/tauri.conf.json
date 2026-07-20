@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Qualms",
+  "version": "0.0.0",
+  "identifier": "app.qualms.desktop",
+  "build": {
+    "beforeDevCommand": "corepack pnpm prepare:sidecar && corepack pnpm dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "corepack pnpm prepare:sidecar && corepack pnpm build:web",
+    "frontendDist": "../build"
+  },
+  "app": {
+    "security": {
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost"
+    },
+    "windows": [
+      {
+        "title": "Qualms",
+        "width": 1100,
+        "height": 720,
+        "minWidth": 720,
+        "minHeight": 520
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "externalBin": ["binaries/qualms"],
+    "targets": "all"
+  }
+}
