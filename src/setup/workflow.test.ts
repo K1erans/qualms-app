@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { setupWithHelloWorldTest } from "./setup-workflow.js";
+import { setupWithHelloWorldTest } from "./workflow.js";
 
 test("creates a Hello World test after setup", async () => {
   const result = await setupWithHelloWorldTest(

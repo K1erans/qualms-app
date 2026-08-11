@@ -1,4 +1,4 @@
-import type { RunnerClient } from "./setup-workflow.js";
+import type { RunnerClient } from "../setup/workflow.js";
 
 interface CreatedResource {
   id: string;

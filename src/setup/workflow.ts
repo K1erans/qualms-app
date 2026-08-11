@@ -1,5 +1,5 @@
-import { createSetupPayload } from "./setup-job.js";
-import type { SetupPayload } from "./types/setup-job.js";
+import { createSetupPayload } from "./job.js";
+import type { SetupPayload } from "./types.js";
 
 export interface CreateTestPayload {
   version: 1;

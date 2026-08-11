@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 
-import type { SetupCliOptions, SetupPayload } from "./types/setup-job.js";
+import type { SetupCliOptions, SetupPayload } from "./types.js";
 
 export function parseSetupArguments(args: string[]): SetupCliOptions {
   let runnerBaseUrl: string | undefined;

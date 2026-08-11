@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { greeting } from "./greeting.js";
-import { createHttpRunnerClient } from "./runner-client.js";
+import { greeting } from "./cli/greeting.js";
+import { createHttpRunnerClient } from "./runner/http-client.js";
 import {
   createSetupPayload,
   parseSetupArguments,
   resolveGitSource,
-} from "./setup-job.js";
-import { setupWithHelloWorldTest } from "./setup-workflow.js";
+} from "./setup/job.js";
+import { setupWithHelloWorldTest } from "./setup/workflow.js";
 
 function showHelp(): void {
   console.log("Usage: qualms [options]");
