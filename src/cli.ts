@@ -1,23 +1,20 @@
 #!/usr/bin/env node
 
 import { greeting } from "./greeting.js";
+import { createHttpRunnerClient } from "./runner-client.js";
 import {
   createSetupPayload,
   parseSetupArguments,
   resolveGitSource,
-  submitSetupPayload,
 } from "./setup-job.js";
+import { setupWithHelloWorldTest } from "./setup-workflow.js";
 
 function showHelp(): void {
   console.log("Usage: qualms [options]");
   console.log("");
   console.log("Options:");
-  console.log("  -s, --setup <goal>     Create a remote testing job");
-  console.log("      --goal <goal>      Testing goal (alternative to positional goal)");
-  console.log("      --test <objective> Add a subtest; may be repeated");
-  console.log("      --tests <json>      Add subtests from a JSON string array");
-  console.log("      --timeout <mins>   Job timeout in minutes (default: 30)");
-  console.log("      --endpoint <url>   POST the job; otherwise print its JSON payload");
+  console.log("  -s, --setup            Set up the current repository");
+  console.log("      --endpoint <url>   Runner base URL; otherwise print the setup payload");
   console.log("  -h, --help             Show this help message");
   console.log("  -v, --version          Show the version");
   console.log("");
@@ -40,13 +37,16 @@ async function main(args: string[]): Promise<void> {
   }
   if (command === "--setup" || command === "-s") {
     const request = parseSetupArguments(args.slice(1));
-    const payload = createSetupPayload(resolveGitSource(), request);
+    const source = resolveGitSource();
 
     if (request.endpoint) {
-      const responseBody = await submitSetupPayload(request.endpoint, payload);
-      console.log(responseBody || JSON.stringify({ accepted: true }));
+      const result = await setupWithHelloWorldTest(
+        source,
+        createHttpRunnerClient(request.endpoint),
+      );
+      console.log(JSON.stringify(result, null, 2));
     } else {
-      console.log(JSON.stringify(payload, null, 2));
+      console.log(JSON.stringify(createSetupPayload(source), null, 2));
     }
     return;
   }

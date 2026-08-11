@@ -7,74 +7,34 @@ import {
   parseSetupArguments,
 } from "./setup-job.js";
 
-test("parses a goal and repeatable subtests", () => {
+test("accepts setup with no test definition", () => {
+  assert.deepEqual(parseSetupArguments([]), {});
+});
+
+test("accepts a runner endpoint", () => {
   assert.deepEqual(
-    parseSetupArguments([
-      "Confirm the critical journey works",
-      "--test",
-      "Verify the application starts",
-      "--test",
-      "Verify login works",
-      "--timeout",
-      "15",
-    ]),
+    parseSetupArguments(["--endpoint", "https://runner.example.com/api"]),
     {
-      goal: "Confirm the critical journey works",
-      subtests: ["Verify the application starts", "Verify login works"],
-      timeoutMinutes: 15,
+      endpoint: "https://runner.example.com/api",
     },
   );
 });
 
-test("requires at least one subtest", () => {
+test("rejects test definitions during setup", () => {
   assert.throws(
-    () => parseSetupArguments(["Test the application"]),
-    /At least one subtest is required/,
+    () => parseSetupArguments(["--test", "Verify login"]),
+    /Unknown setup option: --test/,
   );
 });
 
-test("accepts subtests as a JSON array", () => {
-  assert.deepEqual(
-    parseSetupArguments([
-      "--goal",
-      "Confirm login works",
-      "--tests",
-      '["Verify signup", "Verify login"]',
-    ]),
-    {
-      goal: "Confirm login works",
-      subtests: ["Verify signup", "Verify login"],
-      timeoutMinutes: 30,
-    },
-  );
-});
-
-test("rejects invalid subtest arrays", () => {
-  assert.throws(
-    () => parseSetupArguments(["A goal", "--tests", "[]"]),
-    /non-empty JSON array/,
-  );
-});
-
-test("creates stable, unique subtest identifiers", () => {
+test("creates a setup-only payload", () => {
   const payload = createSetupPayload(
     { repository: "K1erans/qualms-app", commit: "abc123" },
-    {
-      goal: "Confirm login works",
-      subtests: ["Verify login works", "Verify login works"],
-      timeoutMinutes: 30,
-    },
   );
 
   assert.deepEqual(payload, {
     version: 1,
     source: { repository: "K1erans/qualms-app", commit: "abc123" },
-    goal: "Confirm login works",
-    subtests: [
-      { id: "verify-login-works", objective: "Verify login works" },
-      { id: "verify-login-works-2", objective: "Verify login works" },
-    ],
-    limits: { timeoutMinutes: 30 },
   });
 });
 
