@@ -5,7 +5,7 @@ import {
   createSetupPayload,
   normalizeRepository,
   parseSetupArguments,
-} from "./job.js";
+} from "../job.js";
 
 test("accepts setup with no test definition", () => {
   assert.deepEqual(parseSetupArguments([]), {});

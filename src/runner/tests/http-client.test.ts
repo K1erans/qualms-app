@@ -3,8 +3,8 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import test from "node:test";
 
-import { setupWithHelloWorldTest } from "../setup/workflow.js";
-import { createHttpRunnerClient } from "./http-client.js";
+import { setupWithHelloWorldTest } from "../../setup/workflow.js";
+import { createHttpRunnerClient } from "../http-client.js";
 
 test("submits setup and test creation as separate runner requests", async (context) => {
   const requests: Array<{ path: string; body: unknown }> = [];
