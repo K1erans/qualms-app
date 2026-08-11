@@ -36,13 +36,13 @@ async function main(args: string[]): Promise<void> {
     return;
   }
   if (command === "--setup" || command === "-s") {
-    const request = parseSetupArguments(args.slice(1));
+    const options = parseSetupArguments(args.slice(1));
     const source = resolveGitSource();
 
-    if (request.endpoint) {
+    if (options.runnerBaseUrl) {
       const result = await setupWithHelloWorldTest(
         source,
-        createHttpRunnerClient(request.endpoint),
+        createHttpRunnerClient(options.runnerBaseUrl),
       );
       console.log(JSON.stringify(result, null, 2));
     } else {

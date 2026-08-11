@@ -6,6 +6,6 @@ export interface SetupPayload {
   };
 }
 
-export interface SetupRequest {
-  endpoint?: string;
+export interface SetupCliOptions {
+  runnerBaseUrl?: string;
 }

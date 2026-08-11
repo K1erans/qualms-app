@@ -1,16 +1,16 @@
 import { execFileSync } from "node:child_process";
 
-import type { SetupPayload, SetupRequest } from "./types/setup-job.js";
+import type { SetupCliOptions, SetupPayload } from "./types/setup-job.js";
 
-export function parseSetupArguments(args: string[]): SetupRequest {
-  let endpoint: string | undefined;
+export function parseSetupArguments(args: string[]): SetupCliOptions {
+  let runnerBaseUrl: string | undefined;
 
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index];
 
     switch (argument) {
       case "--endpoint":
-        endpoint = validateEndpoint(readValue(args, ++index, "--endpoint"));
+        runnerBaseUrl = validateEndpoint(readValue(args, ++index, "--endpoint"));
         break;
       default:
         if (argument?.startsWith("-")) {
@@ -22,11 +22,11 @@ export function parseSetupArguments(args: string[]): SetupRequest {
     }
   }
 
-  const request: SetupRequest = {};
-  if (endpoint !== undefined) {
-    request.endpoint = endpoint;
+  const options: SetupCliOptions = {};
+  if (runnerBaseUrl !== undefined) {
+    options.runnerBaseUrl = runnerBaseUrl;
   }
-  return request;
+  return options;
 }
 
 export function resolveGitSource(cwd: string = process.cwd()): SetupPayload["source"] {

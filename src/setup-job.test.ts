@@ -15,7 +15,7 @@ test("accepts a runner endpoint", () => {
   assert.deepEqual(
     parseSetupArguments(["--endpoint", "https://runner.example.com/api"]),
     {
-      endpoint: "https://runner.example.com/api",
+      runnerBaseUrl: "https://runner.example.com/api",
     },
   );
 });
