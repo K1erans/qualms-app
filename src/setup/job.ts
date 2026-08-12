@@ -1,6 +1,5 @@
 import { execFileSync } from "node:child_process";
-
-import type { SetupCliOptions, SetupPayload } from "./types.js";
+import type { Payload, SetupCliOptions } from "./types.js";
 
 export function parseSetupArguments(args: string[]): SetupCliOptions {
   let runnerBaseUrl: string | undefined;
@@ -29,7 +28,7 @@ export function parseSetupArguments(args: string[]): SetupCliOptions {
   return options;
 }
 
-export function resolveGitSource(cwd: string = process.cwd()): SetupPayload["source"] {
+export function resolveGitSource(cwd: string = process.cwd()): Payload["source"] {
   const repositoryUrl = runGit(["remote", "get-url", "origin"], cwd);
   const commit = runGit(["rev-parse", "HEAD"], cwd);
 
@@ -39,7 +38,8 @@ export function resolveGitSource(cwd: string = process.cwd()): SetupPayload["sou
   };
 }
 
-export function createSetupPayload(source: SetupPayload["source"]): SetupPayload {
+export function createSetupPayload(source: Payload["source"]): Payload {
+  
   return {
     version: 1,
     source,
