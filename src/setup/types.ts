@@ -1,5 +1,5 @@
-export interface SetupPayload {
-  version: 1;
+export interface Payload {
+  version: number ;
   source: {
     repository: string;
     commit: string;

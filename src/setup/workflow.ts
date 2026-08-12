@@ -1,5 +1,5 @@
 import { createSetupPayload } from "./job.js";
-import type { SetupPayload } from "./types.js";
+import type { Payload } from "./types.js";
 
 export interface CreateTestPayload {
   version: 1;
@@ -8,7 +8,7 @@ export interface CreateTestPayload {
 }
 
 export interface RunnerClient {
-  createSetup(payload: SetupPayload): Promise<{ id: string }>;
+  createSetup(payload: Payload): Promise<{ id: string }>;
   createTest(payload: CreateTestPayload): Promise<{ id: string }>;
 }
 
@@ -18,7 +18,7 @@ export interface SetupWorkflowResult {
 }
 
 export async function setupWithHelloWorldTest(
-  source: SetupPayload["source"],
+  source: Payload["source"],
   runner: RunnerClient,
 ): Promise<SetupWorkflowResult> {
   const setup = await runner.createSetup(createSetupPayload(source));
