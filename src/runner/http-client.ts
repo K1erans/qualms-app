@@ -1,5 +1,6 @@
 import type { SetupClient } from "../setup/workflow.js";
 import type { SetupResult } from "../setup/types.js";
+import { isLocalHttpUrl } from "../url-policy.js";
 
 export function createHttpSetupClient(
   endpoint: string,
@@ -90,17 +91,8 @@ function isBrowserUrl(value: unknown): value is string {
   if (!isNonEmptyString(value)) return false;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" || isLocalHttp(url);
+    return url.protocol === "https:" || isLocalHttpUrl(url);
   } catch {
     return false;
   }
-}
-
-function isLocalHttp(url: URL): boolean {
-  return (
-    url.protocol === "http:" &&
-    (url.hostname === "localhost" ||
-      url.hostname === "127.0.0.1" ||
-      url.hostname === "[::1]")
-  );
 }

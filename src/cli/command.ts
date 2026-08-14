@@ -2,6 +2,7 @@ import { createHttpSetupClient } from "../runner/http-client.js";
 import { parseSetupArguments } from "../setup/job.js";
 import type { SetupResult } from "../setup/types.js";
 import { setupRepository } from "../setup/workflow.js";
+import { isLocalHttpUrl } from "../url-policy.js";
 
 type Environment = Record<string, string | undefined>;
 type WriteLine = (line: string) => void;
@@ -58,7 +59,7 @@ function readServiceUrl(configuredValue: string | undefined): string {
   if (url.username || url.password || url.search || url.hash) {
     throw new Error("QUALMS_SERVICE_URL must not contain credentials, a query, or a fragment");
   }
-  if (url.protocol !== "https:" && !isLocalHttp(url)) {
+  if (url.protocol !== "https:" && !isLocalHttpUrl(url)) {
     throw new Error(
       "QUALMS_SERVICE_URL must use HTTPS (HTTP is only allowed for localhost)",
     );
@@ -92,13 +93,4 @@ function formatReason(reason: Extract<SetupResult, { status: "pending_auth" }>["
     case "ssh_public_key":
       return "SSH public-key installation";
   }
-}
-
-function isLocalHttp(url: URL): boolean {
-  return (
-    url.protocol === "http:" &&
-    (url.hostname === "localhost" ||
-      url.hostname === "127.0.0.1" ||
-      url.hostname === "[::1]")
-  );
 }

@@ -15,15 +15,29 @@ test("requires one repository URL", () => {
   );
   assert.throws(
     () => parseSetupArguments(["https://git.example.com/org/one.git", "extra"]),
-    /Unexpected setup argument: extra/,
+    /Unexpected setup argument$/,
   );
 });
 
 test("rejects the removed endpoint option", () => {
   assert.throws(
     () => parseSetupArguments(["--endpoint", "https://runner.example.com"]),
-    /Unknown setup option: --endpoint/,
+    /Unknown setup option$/,
   );
+});
+
+test("does not echo unexpected credential-like arguments", () => {
+  const secret = "token-must-not-appear";
+  for (const args of [
+    ["https://github.com/org/project.git", secret],
+    [`--token=${secret}`],
+  ]) {
+    assert.throws(() => parseSetupArguments(args), (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.doesNotMatch(error.message, new RegExp(secret));
+      return true;
+    });
+  }
 });
 
 test("accepts and preserves HTTPS, SSH URL, and SCP-style remotes", () => {
@@ -54,6 +68,8 @@ test("rejects unsupported and dangerous Git transports", () => {
   for (const remote of [
     "../local-repository",
     "/srv/repository",
+    "C:\\repositories\\project",
+    "\\\\server\\share\\project",
     "file:///srv/repository",
     "git://github.com/org/project.git",
     "ext::sh -c exploit",

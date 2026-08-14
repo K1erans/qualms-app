@@ -16,13 +16,13 @@ export function parseSetupArguments(args: string[]): SetupCliOptions {
     );
   }
   if (repositoryUrl.startsWith("-")) {
-    throw new Error(`Unknown setup option: ${repositoryUrl}`);
+    throw new Error("Unknown setup option");
   }
   if (args[1] !== undefined) {
     if (args[1].startsWith("-")) {
-      throw new Error(`Unknown setup option: ${args[1]}`);
+      throw new Error("Unknown setup option");
     }
-    throw new Error(`Unexpected setup argument: ${args[1]}`);
+    throw new Error("Unexpected setup argument");
   }
 
   return { repository: parseRepositoryUrl(repositoryUrl) };
@@ -31,6 +31,9 @@ export function parseSetupArguments(args: string[]): SetupCliOptions {
 export function parseRepositoryUrl(input: string): RepositoryRemote {
   const url = input.trim();
   if (url.length === 0) {
+    throw new Error(SUPPORTED_REMOTE_MESSAGE);
+  }
+  if (/^[A-Za-z]:[\\/]/.test(url) || url.startsWith("\\\\")) {
     throw new Error(SUPPORTED_REMOTE_MESSAGE);
   }
 
