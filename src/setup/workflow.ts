@@ -1,35 +1,17 @@
-import { createSetupPayload } from "./job.js";
-import type { Payload } from "./types.js";
+import { createSetupRequest } from "./job.js";
+import type {
+  RepositoryRemote,
+  SetupRequest,
+  SetupResult,
+} from "./types.js";
 
-export interface CreateTestPayload {
-  version: 1;
-  setupId: string;
-  objective: string;
+export interface SetupClient {
+  setup(request: SetupRequest): Promise<SetupResult>;
 }
 
-export interface RunnerClient {
-  createSetup(payload: Payload): Promise<{ id: string }>;
-  createTest(payload: CreateTestPayload): Promise<{ id: string }>;
-}
-
-export interface SetupWorkflowResult {
-  setupId: string;
-  testId: string;
-}
-
-export async function setupWithHelloWorldTest(
-  source: Payload["source"],
-  runner: RunnerClient,
-): Promise<SetupWorkflowResult> {
-  const setup = await runner.createSetup(createSetupPayload(source));
-  const createdTest = await runner.createTest({
-    version: 1,
-    setupId: setup.id,
-    objective: "Hello World",
-  });
-
-  return {
-    setupId: setup.id,
-    testId: createdTest.id,
-  };
+export async function setupRepository(
+  repository: RepositoryRemote,
+  client: SetupClient,
+): Promise<SetupResult> {
+  return client.setup(createSetupRequest(repository));
 }

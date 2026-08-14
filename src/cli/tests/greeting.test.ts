@@ -4,10 +4,9 @@ import test from "node:test";
 import { parseCommandLine } from "../greeting.js";
 
 test("parses a command and its arguments", () => {
-  assert.deepEqual(parseCommandLine("  setup --endpoint http://localhost:3000  "), [
+  assert.deepEqual(parseCommandLine("  setup git@example.com:team/repo.git  "), [
     "setup",
-    "--endpoint",
-    "http://localhost:3000",
+    "git@example.com:team/repo.git",
   ]);
 });
 

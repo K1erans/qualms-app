@@ -1,81 +1,113 @@
-import { execFileSync } from "node:child_process";
-import type { Payload, SetupCliOptions } from "./types.js";
+import type {
+  RepositoryAuthentication,
+  RepositoryRemote,
+  SetupCliOptions,
+  SetupRequest,
+} from "./types.js";
+
+const SUPPORTED_REMOTE_MESSAGE =
+  "Repository URL must use HTTPS, ssh://, or SCP-style SSH";
 
 export function parseSetupArguments(args: string[]): SetupCliOptions {
-  let runnerBaseUrl: string | undefined;
-
-  for (let index = 0; index < args.length; index += 1) {
-    const argument = args[index];
-
-    switch (argument) {
-      case "--endpoint":
-        runnerBaseUrl = validateEndpoint(readValue(args, ++index, "--endpoint"));
-        break;
-      default:
-        if (argument?.startsWith("-")) {
-          throw new Error(`Unknown setup option: ${argument}`);
-        }
-        if (argument !== undefined) {
-          throw new Error(`Unexpected setup argument: ${argument}`);
-        }
+  const repositoryUrl = args[0];
+  if (repositoryUrl === undefined) {
+    throw new Error(
+      "Repository URL is required. Usage: qualms setup <repository-url>",
+    );
+  }
+  if (repositoryUrl.startsWith("-")) {
+    throw new Error(`Unknown setup option: ${repositoryUrl}`);
+  }
+  if (args[1] !== undefined) {
+    if (args[1].startsWith("-")) {
+      throw new Error(`Unknown setup option: ${args[1]}`);
     }
+    throw new Error(`Unexpected setup argument: ${args[1]}`);
   }
 
-  const options: SetupCliOptions = {};
-  if (runnerBaseUrl !== undefined) {
-    options.runnerBaseUrl = runnerBaseUrl;
-  }
-  return options;
+  return { repository: parseRepositoryUrl(repositoryUrl) };
 }
 
-export function resolveGitSource(cwd: string = process.cwd()): Payload["source"] {
-  const repositoryUrl = runGit(["remote", "get-url", "origin"], cwd);
-  const commit = runGit(["rev-parse", "HEAD"], cwd);
+export function parseRepositoryUrl(input: string): RepositoryRemote {
+  const url = input.trim();
+  if (url.length === 0) {
+    throw new Error(SUPPORTED_REMOTE_MESSAGE);
+  }
 
+  if (url.startsWith("https://")) {
+    return parseStandardRemote(url, "https");
+  }
+  if (url.startsWith("ssh://")) {
+    return parseStandardRemote(url, "ssh");
+  }
+
+  const scpMatch = url.match(
+    /^(?:[A-Za-z0-9._-]+@)?(\[[0-9A-Fa-f:]+\]|[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?):([^\s/:][^\s:]*)$/,
+  );
+  if (scpMatch?.[1]) {
+    return {
+      url,
+      host: stripIpv6Brackets(scpMatch[1]).toLowerCase(),
+      transport: "ssh",
+    };
+  }
+
+  throw new Error(SUPPORTED_REMOTE_MESSAGE);
+}
+
+export function inferRepositoryAuthentication(
+  repository: RepositoryRemote,
+): RepositoryAuthentication {
+  if (repository.transport === "https") {
+    return { method: "https_credentials" };
+  }
   return {
-    repository: normalizeRepository(repositoryUrl),
-    commit,
+    method: "project_ssh_key",
+    hostKeyVerification: "pending_service_enrollment",
   };
 }
 
-export function createSetupPayload(source: Payload["source"]): Payload {
-  
+export function createSetupRequest(
+  repository: RepositoryRemote,
+): SetupRequest {
   return {
     version: 1,
-    source,
+    repository,
+    authentication: inferRepositoryAuthentication(repository),
   };
 }
 
-function readValue(args: string[], index: number, option: string): string {
-  const value = args[index]?.trim();
-  if (!value) {
-    throw new Error(`${option} requires a value`);
-  }
-  return value;
-}
-
-function validateEndpoint(value: string): string {
-  const url = new URL(value);
-  const isLocal = url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "[::1]";
-  if (url.protocol !== "https:" && !(url.protocol === "http:" && isLocal)) {
-    throw new Error("--endpoint must use HTTPS (HTTP is only allowed for localhost)");
-  }
-  return url.toString();
-}
-
-function runGit(args: string[], cwd: string): string {
+function parseStandardRemote(
+  remote: string,
+  transport: RepositoryRemote["transport"],
+): RepositoryRemote {
+  let parsed: URL;
   try {
-    return execFileSync("git", args, {
-      cwd,
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    }).trim();
+    parsed = new URL(remote);
   } catch {
-    throw new Error("The current directory must be a Git repository with an origin remote and a commit");
+    throw new Error(SUPPORTED_REMOTE_MESSAGE);
   }
+
+  if (parsed.protocol !== `${transport}:` || !parsed.hostname || parsed.pathname === "/") {
+    throw new Error(SUPPORTED_REMOTE_MESSAGE);
+  }
+  if (transport === "https" && (parsed.username || parsed.password)) {
+    throw new Error("HTTPS repository URLs must not contain credentials");
+  }
+  if (transport === "ssh" && parsed.password) {
+    throw new Error("SSH repository URLs must not contain a password");
+  }
+  if (parsed.search || parsed.hash) {
+    throw new Error("Repository URLs must not contain a query or fragment");
+  }
+
+  return {
+    url: remote,
+    host: parsed.hostname.toLowerCase(),
+    transport,
+  };
 }
 
-export function normalizeRepository(remote: string): string {
-  const githubMatch = remote.match(/^(?:https?:\/\/github\.com\/|git@github\.com:)([^/]+\/[^/]+?)(?:\.git)?$/);
-  return githubMatch?.[1] ?? remote;
+function stripIpv6Brackets(host: string): string {
+  return host.startsWith("[") && host.endsWith("]") ? host.slice(1, -1) : host;
 }
