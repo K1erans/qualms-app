@@ -1,0 +1,5 @@
+{
+  "name": "qualms",
+  "private": true,
+  "workspaces": ["packages/*"]
+}
