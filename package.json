@@ -6,10 +6,12 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "devDependencies": {
     "@oxlint/plugins": "^1.79.0",
-    "oxlint": "^1.79.0"
+    "oxlint": "^1.79.0",
+    "typescript": "^7.0.2"
   }
 }
