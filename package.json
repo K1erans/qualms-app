@@ -7,10 +7,12 @@
   ],
   "scripts": {
     "lint": "oxlint",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
     "@oxlint/plugins": "^1.79.0",
+    "@types/node": "^26.2.0",
     "oxlint": "^1.79.0",
     "typescript": "^7.0.2"
   }
