@@ -3,17 +3,27 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
     "lint": "oxlint",
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present"
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "11.16.0"
+    }
   },
   "devDependencies": {
     "@oxlint/plugins": "^1.79.0",
     "@types/node": "^26.2.0",
     "oxlint": "^1.79.0",
+    "turbo": "^2.10.11",
     "typescript": "^7.0.2"
   }
 }
