@@ -1,34 +1,13 @@
-import { auth, signIn, signOut } from "@/auth";
+import { Suspense } from "react";
+import { HomeSession } from "@/components/home/home-session";
+import { homeSessionFallback } from "@/components/home/home-session-fallback";
 
-export default async function Home() {
-  const session = await auth();
-
-  if (session?.user) {
-    return (
-      <main>
-        <p>Signed in as {session.user.name ?? session.user.email}</p>
-        <form
-          action={async () => {
-            "use server";
-            await signOut();
-          }}
-        >
-          <button type="submit">Sign out</button>
-        </form>
-      </main>
-    );
-  }
-
+export default function Home() {
   return (
     <main>
-      <form
-        action={async () => {
-          "use server";
-          await signIn("github");
-        }}
-      >
-        <button type="submit">Sign in with GitHub</button>
-      </form>
+      <Suspense fallback={homeSessionFallback}>
+        <HomeSession />
+      </Suspense>
     </main>
   );
 }
