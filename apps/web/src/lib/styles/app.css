@@ -1,3 +1,45 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+	themes: false;
+}
+
+@plugin "daisyui/theme" {
+	name: "qualms";
+	default: true;
+	color-scheme: light;
+
+	--color-base-100: #fbf7f2;
+	--color-base-200: #f4efe8;
+	--color-base-300: #e7dfd4;
+	--color-base-content: #1c1814;
+	--color-primary: #1c1814;
+	--color-primary-content: #fbf7f2;
+	--color-secondary: #efe8df;
+	--color-secondary-content: #1c1814;
+	--color-accent: #6a6158;
+	--color-accent-content: #fbf7f2;
+	--color-neutral: #1c1814;
+	--color-neutral-content: #fbf7f2;
+	--color-info: #6a6158;
+	--color-info-content: #fbf7f2;
+	--color-success: #2f5d40;
+	--color-success-content: #fbf7f2;
+	--color-warning: #6a6158;
+	--color-warning-content: #fbf7f2;
+	--color-error: #8f2d2a;
+	--color-error-content: #fbf7f2;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
 :root {
 	--bg: #f4efe8;
 	--surface: #fbf7f2;
@@ -16,37 +58,14 @@
 	--mono: "IBM Plex Mono", "Noto Sans Mono", ui-monospace, monospace;
 }
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-
 html,
 body {
-	margin: 0;
 	height: 100%;
 	background: var(--bg);
 	color: var(--text);
 	font-family: var(--font);
 	font-size: 14px;
 	line-height: 1.45;
-}
-
-button,
-input,
-textarea {
-	font: inherit;
-	color: inherit;
-}
-
-button {
-	cursor: pointer;
-}
-
-button:disabled {
-	cursor: not-allowed;
-	opacity: 0.45;
 }
 
 h1,
@@ -58,4 +77,12 @@ p {
 
 a {
 	color: inherit;
+}
+
+.sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
 }

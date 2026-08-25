@@ -4,6 +4,9 @@
 	import { setWorkspace } from "$lib/shell/context";
 	import { Workspace } from "$lib/shell/workspace.svelte";
 	import "$lib/styles/app.css";
+	import "$lib/styles/shell.css";
+	import "$lib/styles/chat.css";
+	import "$lib/styles/surfaces.css";
 
 	let { children } = $props();
 

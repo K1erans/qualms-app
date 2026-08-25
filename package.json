@@ -25,5 +25,10 @@
     "oxlint": "^1.79.0",
     "turbo": "^2.10.11",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "daisyui": "^5.7.22",
+    "tailwindcss": "^4.3.3"
   }
 }

@@ -35,6 +35,14 @@ function newestThreadId(threads: ChatThread[]): string | null {
 	return newest === null ? null : newest.id;
 }
 
+function wideViewport(): boolean {
+	return typeof window !== "undefined" && window.matchMedia("(min-width: 800px)").matches;
+}
+
+function compactViewport(): boolean {
+	return typeof window !== "undefined" && window.matchMedia("(max-width: 799px)").matches;
+}
+
 export class Workspace {
 	registeredRepos = $state<RegisteredRepository[]>([...SEED_REPOSITORIES]);
 	threads = $state<ChatThread[]>(cloneThreads(SEED_THREADS));
@@ -42,8 +50,8 @@ export class Workspace {
 	surface = $state<WorkspaceSurface>("chat");
 	settingsOpen = $state(false);
 	addModalOpen = $state(false);
-	sidebarOpen = $state(false);
-	threadRailOpen = $state(false);
+	sidebarOpen = $state(wideViewport());
+	threadRailOpen = $state(wideViewport());
 	selectedThreadId = $state<string | null>(null);
 	selectedTestId = $state<string | null>(null);
 	selectedIssueId = $state<string | null>(null);
@@ -102,8 +110,7 @@ export class Workspace {
 		this.settingsOpen = false;
 		this.selectedTestId = null;
 		this.selectedIssueId = null;
-		this.sidebarOpen = false;
-		this.threadRailOpen = false;
+		this.closeOverlaysIfCompact();
 		this.draft = "";
 		writeLastUsedRepoId(repositoryId);
 		const repoThreads = this.threads.filter((thread) => thread.repositoryId === repositoryId);
@@ -116,14 +123,13 @@ export class Workspace {
 		this.settingsOpen = false;
 		this.selectedTestId = null;
 		this.selectedIssueId = null;
-		this.threadRailOpen = false;
+		if (compactViewport()) this.threadRailOpen = false;
 	}
 
 	openSettings(): void {
 		this.settingsOpen = true;
 		this.addModalOpen = false;
-		this.sidebarOpen = false;
-		this.threadRailOpen = false;
+		this.closeOverlaysIfCompact();
 	}
 
 	leaveSettings(): void {
@@ -132,7 +138,7 @@ export class Workspace {
 
 	openAddModal(): void {
 		this.addModalOpen = true;
-		this.sidebarOpen = false;
+		if (compactViewport()) this.sidebarOpen = false;
 	}
 
 	closeAddModal(): void {
@@ -159,7 +165,7 @@ export class Workspace {
 		this.selectedThreadId = threadId;
 		this.surface = "chat";
 		this.settingsOpen = false;
-		this.threadRailOpen = false;
+		if (compactViewport()) this.threadRailOpen = false;
 	}
 
 	openTest(testId: string): void {
@@ -197,11 +203,25 @@ export class Workspace {
 		this.sidebarOpen = false;
 	}
 
+	toggleSidebar(): void {
+		this.sidebarOpen = !this.sidebarOpen;
+	}
+
 	openThreadRail(): void {
 		this.threadRailOpen = true;
 	}
 
 	closeThreadRail(): void {
+		this.threadRailOpen = false;
+	}
+
+	toggleThreadRail(): void {
+		this.threadRailOpen = !this.threadRailOpen;
+	}
+
+	closeOverlaysIfCompact(): void {
+		if (!compactViewport()) return;
+		this.sidebarOpen = false;
 		this.threadRailOpen = false;
 	}
 
@@ -251,7 +271,7 @@ function titleFromDraft(text: string): string {
 
 function assistantReply(thread: ChatThread): string {
 	if (thread.testNumber !== null) {
-		return `I’ll keep this on T-${thread.testNumber}. This is dummy Qualms chat — nothing is running yet.`;
+		return `I’ll keep drafting T-${thread.testNumber} for an agent to take. This is dummy Qualms chat — nothing is running yet.`;
 	}
-	return "I’ll keep this on the repo. Ask about a Qualms test or a finding and I can pull the dummy thread for it.";
+	return "I’ll keep this on the repo. Tell me the behavior an agent should check and I can draft a Qualms test for it.";
 }

@@ -10,7 +10,7 @@
 <div class="issues">
 	{#if issue}
 		<div class="detail">
-			<button type="button" class="back" onclick={() => workspace.leaveIssue()}>
+			<button type="button" class="btn btn-sm" onclick={() => workspace.leaveIssue()}>
 				Back to issues
 			</button>
 			<h2>{issue.title}</h2>
@@ -32,7 +32,11 @@
 				<ul>
 					{#each workspace.repoIssues as item (item.id)}
 						<li>
-							<button type="button" onclick={() => workspace.openIssue(item.id)}>
+							<button
+								type="button"
+								class="btn btn-ghost"
+								onclick={() => workspace.openIssue(item.id)}
+							>
 								<span class="title">{item.title}</span>
 								<span class="meta">
 									#{item.number} · T-{item.testNumber} ·
@@ -46,76 +50,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-	.issues {
-		flex: 1;
-		min-height: 0;
-		overflow: auto;
-	}
-
-	.list,
-	.detail {
-		max-width: 720px;
-		padding: 20px;
-	}
-
-	.intro,
-	.none,
-	.meta,
-	.note {
-		color: var(--muted);
-	}
-
-	.intro,
-	.none {
-		margin-bottom: 16px;
-	}
-
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	li + li {
-		border-top: 1px solid var(--border);
-	}
-
-	li button {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		width: 100%;
-		padding: 12px 0;
-		border: 0;
-		background: transparent;
-		text-align: left;
-	}
-
-	.title {
-		font-weight: 500;
-	}
-
-	h2 {
-		margin: 8px 0 8px;
-		font-size: 18px;
-	}
-
-	.body {
-		margin: 16px 0;
-		white-space: pre-wrap;
-	}
-
-	.note {
-		margin-top: 16px;
-	}
-
-	.back {
-		height: 36px;
-		padding: 0 12px;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--surface);
-	}
-</style>

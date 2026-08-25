@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ChatSurface from "./ChatSurface.svelte";
 	import IssuesSurface from "./IssuesSurface.svelte";
+	import PanelToggle from "./PanelToggle.svelte";
 	import TestsSurface from "./TestsSurface.svelte";
 	import { getWorkspace } from "$lib/shell/context";
 	import type { WorkspaceSurface } from "$lib/shell/types";
@@ -18,23 +19,46 @@
 {#if repo}
 	<div class="workspace">
 		<header class="repo-header">
-			<div class="meta">
-				<h1>{repo.fullName}</h1>
-				<p>{repo.description}</p>
+			<div class="heading">
+				{#if !workspace.sidebarOpen}
+					<PanelToggle
+						side="left"
+						expanded={false}
+						controls="repo-sidebar"
+						onclick={() => workspace.toggleSidebar()}
+					/>
+				{/if}
+				<div class="meta">
+					<h1>{repo.fullName}</h1>
+					<p>{repo.description}</p>
+				</div>
 			</div>
-			<div class="tabs" role="tablist" aria-label="Repository surfaces">
-				{#each surfaces as item (item.id)}
-					<button
-						type="button"
-						role="tab"
-						id={`tab-${item.id}`}
-						aria-selected={workspace.surface === item.id}
-						aria-controls={`panel-${item.id}`}
-						onclick={() => workspace.openSurface(item.id)}
-					>
-						{item.label}
-					</button>
-				{/each}
+			<div class="header-end">
+				<div class="tabs tabs-border" role="tablist" aria-label="Repository surfaces">
+					{#each surfaces as item (item.id)}
+						<button
+							type="button"
+							class={{ tab: true, "tab-active": workspace.surface === item.id }}
+							role="tab"
+							id={`tab-${item.id}`}
+							aria-selected={workspace.surface === item.id}
+							aria-controls={`panel-${item.id}`}
+							onclick={() => workspace.openSurface(item.id)}
+						>
+							{item.label}
+						</button>
+					{/each}
+				</div>
+				{#if workspace.surface === "chat"}
+					<div class="chats-toggle">
+						<PanelToggle
+							side="right"
+							expanded={workspace.threadRailOpen}
+							controls="chat-rail"
+							onclick={() => workspace.toggleThreadRail()}
+						/>
+					</div>
+				{/if}
 			</div>
 		</header>
 
@@ -54,76 +78,3 @@
 		</div>
 	</div>
 {/if}
-
-<style>
-	.workspace {
-		display: flex;
-		flex: 1;
-		flex-direction: column;
-		min-height: 0;
-	}
-
-	.repo-header {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: flex-end;
-		justify-content: space-between;
-		gap: 12px 24px;
-		padding: 16px 20px 0;
-		border-bottom: 1px solid var(--border);
-	}
-
-	.meta {
-		padding-bottom: 12px;
-	}
-
-	h1 {
-		font-size: 16px;
-		font-weight: 600;
-		font-family: var(--mono);
-	}
-
-	p {
-		margin-top: 2px;
-		color: var(--muted);
-	}
-
-	.tabs {
-		display: flex;
-		gap: 16px;
-	}
-
-	.tabs button {
-		padding: 0 0 10px;
-		border: 0;
-		border-bottom: 2px solid transparent;
-		background: transparent;
-		color: var(--muted);
-	}
-
-	.tabs button[aria-selected="true"] {
-		border-bottom-color: var(--text);
-		color: var(--text);
-		font-weight: 500;
-	}
-
-	.pane {
-		display: flex;
-		flex: 1;
-		min-height: 0;
-	}
-
-	@media (max-width: 799px) {
-		.repo-header .meta {
-			display: none;
-		}
-
-		.repo-header {
-			padding: 0 16px;
-		}
-
-		.tabs button {
-			padding-top: 12px;
-		}
-	}
-</style>

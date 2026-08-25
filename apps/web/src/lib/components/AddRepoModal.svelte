@@ -53,6 +53,7 @@
 </script>
 
 <dialog
+	class="add-repo"
 	{@attach (node: HTMLDialogElement) => {
 		if (workspace.addModalOpen) {
 			if (!node.open) node.showModal();
@@ -82,6 +83,7 @@
 		<label class="search">
 			<span class="sr">Search repositories</span>
 			<input
+				class="input"
 				type="search"
 				placeholder="Search repositories"
 				bind:value={query}
@@ -108,10 +110,12 @@
 		</div>
 
 		<div class="actions">
-			<button type="button" class="ghost" onclick={() => workspace.closeAddModal()}>
+			<button type="button" class="btn btn-ghost btn-sm" onclick={() => workspace.closeAddModal()}>
 				Cancel
 			</button>
-			<button type="submit" class="solid" disabled={pickedId === null}>Add</button>
+			<button type="submit" class="btn btn-neutral btn-sm" disabled={pickedId === null}>
+				Add
+			</button>
 		</div>
 	</form>
 </dialog>
@@ -121,7 +125,7 @@
 		type="button"
 		role="option"
 		aria-selected={pickedId === repo.id}
-		class={{ option: true, picked: pickedId === repo.id }}
+		class={["btn btn-ghost option", { picked: pickedId === repo.id }]}
 		onclick={() => {
 			pickedId = repo.id;
 		}}
@@ -130,131 +134,3 @@
 		<span class="desc">{repo.description}</span>
 	</button>
 {/snippet}
-
-<style>
-	dialog {
-		width: min(480px, calc(100vw - 32px));
-		padding: 0;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--surface);
-		color: var(--text);
-		box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-	}
-
-	dialog::backdrop {
-		background: var(--overlay);
-	}
-
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-		padding: 20px;
-	}
-
-	h1 {
-		font-size: 16px;
-		font-weight: 600;
-	}
-
-	.hint {
-		color: var(--muted);
-	}
-
-	.search input {
-		width: 100%;
-		height: 36px;
-		padding: 0 10px;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--bg);
-	}
-
-	.search input:focus {
-		outline: 2px solid var(--text);
-		outline-offset: 1px;
-	}
-
-	.sr {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		overflow: hidden;
-		clip: rect(0 0 0 0);
-	}
-
-	.list {
-		max-height: 280px;
-		overflow: auto;
-		border: 1px solid var(--border);
-		border-radius: var(--radius);
-		background: var(--bg);
-	}
-
-	.group {
-		padding: 8px 10px 4px;
-		color: var(--muted);
-		font-size: 12px;
-		font-weight: 500;
-	}
-
-	.option {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-		width: 100%;
-		padding: 8px 10px;
-		border: 0;
-		background: transparent;
-		text-align: left;
-	}
-
-	.option:hover,
-	.option.picked {
-		background: var(--hover);
-	}
-
-	.full {
-		font-family: var(--mono);
-		font-size: 13px;
-	}
-
-	.desc {
-		color: var(--muted);
-		font-size: 12px;
-	}
-
-	.none {
-		padding: 16px 10px;
-		color: var(--muted);
-	}
-
-	.actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 8px;
-	}
-
-	.ghost,
-	.solid {
-		height: 36px;
-		padding: 0 12px;
-		border-radius: var(--radius);
-	}
-
-	.ghost {
-		border: 1px solid var(--border);
-		background: transparent;
-	}
-
-	.solid {
-		border: 0;
-		background: var(--text);
-		color: var(--surface);
-	}
-
-	.solid:disabled {
-		opacity: 0.4;
-	}
-</style>

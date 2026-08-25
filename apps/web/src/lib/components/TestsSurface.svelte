@@ -10,7 +10,7 @@
 <div class="tests">
 	{#if test}
 		<div class="detail">
-			<button type="button" class="back" onclick={() => workspace.leaveTest()}>
+			<button type="button" class="btn btn-sm" onclick={() => workspace.leaveTest()}>
 				Back to tests
 			</button>
 			<h2>{test.name}</h2>
@@ -23,7 +23,11 @@
 				— {formatOutcome(test.lastOutcome)}.
 			</p>
 			<p class="note">This check is defined in Qualms. App or CI can kick it off.</p>
-			<button type="button" class="chat" onclick={() => workspace.openTestConversation(test.id)}>
+			<button
+				type="button"
+				class="btn btn-neutral btn-sm"
+				onclick={() => workspace.openTestConversation(test.id)}
+			>
 				Open conversation
 			</button>
 		</div>
@@ -36,7 +40,7 @@
 			{#if workspace.repoTests.length === 0}
 				<p class="none">No tests in this repository yet.</p>
 			{:else}
-				<table>
+				<table class="table">
 					<thead>
 						<tr>
 							<th>Test</th>
@@ -50,7 +54,7 @@
 								<td>
 									<button
 										type="button"
-										class="row"
+										class="btn btn-ghost btn-sm row"
 										onclick={() => workspace.openTest(item.id)}
 									>
 										<span class="name">{item.name}</span>
@@ -74,110 +78,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-	.tests {
-		flex: 1;
-		min-height: 0;
-		overflow: auto;
-	}
-
-	.list,
-	.detail {
-		max-width: 860px;
-		padding: 20px;
-	}
-
-	.intro,
-	.none,
-	.summary,
-	.run,
-	.note,
-	.id,
-	.when,
-	.num {
-		color: var(--muted);
-	}
-
-	.intro,
-	.none {
-		margin-bottom: 16px;
-	}
-
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-
-	th {
-		padding: 0 8px 8px 0;
-		color: var(--muted);
-		font-size: 12px;
-		font-weight: 500;
-		text-align: left;
-	}
-
-	td {
-		padding: 10px 12px 10px 0;
-		border-top: 1px solid var(--border);
-		vertical-align: top;
-	}
-
-	.row {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
-		padding: 0;
-		border: 0;
-		background: transparent;
-		text-align: left;
-	}
-
-	.name {
-		font-weight: 500;
-	}
-
-	.passed {
-		color: var(--ok);
-	}
-
-	.failed {
-		color: var(--fail);
-	}
-
-	.when {
-		display: block;
-		font-size: 12px;
-	}
-
-	h2 {
-		margin: 8px 0 4px;
-		font-size: 18px;
-	}
-
-	.summary {
-		margin: 12px 0;
-	}
-
-	.note {
-		margin: 8px 0 16px;
-	}
-
-	.back,
-	.chat {
-		height: 36px;
-		padding: 0 12px;
-		border-radius: var(--radius);
-	}
-
-	.back {
-		border: 1px solid var(--border);
-		background: var(--surface);
-	}
-
-	.chat {
-		border: 0;
-		background: var(--text);
-		color: var(--surface);
-	}
-</style>
