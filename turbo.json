@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**"]
+      "outputs": [".svelte-kit/**", "build/**", ".output/**", "dist/**"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]
