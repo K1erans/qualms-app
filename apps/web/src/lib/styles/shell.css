@@ -54,7 +54,7 @@
 
 .sidebar .brand {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	justify-content: space-between;
 	gap: 8px;
 	padding: 12px;
@@ -67,16 +67,32 @@
 }
 
 .sidebar .who {
-	margin-top: 2px;
+	overflow: hidden;
+	min-width: 0;
 	color: var(--muted);
 	font-size: 13px;
+	font-weight: 400;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .sidebar .repos {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
 	min-height: 0;
 	overflow: auto;
 	padding: 8px;
+}
+
+.sidebar .add {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
+	flex-shrink: 0;
+	margin: auto -8px -8px;
+	padding: 12px;
+	background: linear-gradient(transparent, var(--sidebar) 48%);
 }
 
 .sidebar .label {
@@ -130,6 +146,23 @@
 
 .sidebar .footer .btn {
 	justify-content: flex-start;
+}
+
+.sidebar .footer .account {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+}
+
+.sidebar .footer .gear {
+	flex-shrink: 0;
+	width: 16px;
+	height: 16px;
+}
+
+[data-theme="qualms-dark"] .sidebar .footer .gear {
+	filter: invert(1);
 }
 
 .workspace {

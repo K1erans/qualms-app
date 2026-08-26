@@ -1,4 +1,5 @@
 <script lang="ts">
+	import settingsIcon from "$lib/assets/settings_icon.svg";
 	import PanelToggle from "./PanelToggle.svelte";
 	import { getWorkspace } from "$lib/shell/context";
 
@@ -7,10 +8,7 @@
 
 <aside id="repo-sidebar" class={{ sidebar: true, open: workspace.sidebarOpen }}>
 	<div class="brand">
-		<div>
-			<p class="name">Qualms</p>
-			<p class="who">{workspace.identity.displayName}</p>
-		</div>
+		<p class="name">Qualms</p>
 		<PanelToggle
 			side="left"
 			expanded={true}
@@ -44,24 +42,28 @@
 		{#if workspace.registeredRepos.length === 0}
 			<p class="empty">No repositories yet.</p>
 		{/if}
+		<div class="add">
+			<button type="button" class="btn btn-primary btn-sm" onclick={() => workspace.openAddModal()}>
+				Add repository
+			</button>
+		</div>
 	</div>
 
 	<div class="footer">
-		<button type="button" class="btn btn-primary btn-sm" onclick={() => workspace.openAddModal()}>
-			Add repository
-		</button>
 		<button
 			type="button"
 			class={{
 				btn: true,
 				"btn-ghost": true,
 				"btn-sm": true,
+				account: true,
 				active: workspace.settingsOpen,
 			}}
 			aria-current={workspace.settingsOpen ? "page" : undefined}
 			onclick={() => workspace.openSettings()}
 		>
-			Account
+			<span class="who">{workspace.identity.displayName}</span>
+			<img class="gear" src={settingsIcon} alt="" width="16" height="16" />
 		</button>
 	</div>
 </aside>
