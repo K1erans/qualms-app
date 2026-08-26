@@ -205,6 +205,9 @@
 
 .add-repo {
 	width: min(480px, calc(100vw - 32px));
+	height: fit-content;
+	max-height: calc(100dvh - 32px);
+	margin: auto;
 	padding: 0;
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
