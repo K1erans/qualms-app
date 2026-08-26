@@ -58,7 +58,11 @@
 
 .settings section {
 	padding-top: 16px;
-	border-top: 1px solid var(--border);
+	border-top: 1px solid var(--line);
+}
+
+.settings .scheme {
+	margin-top: 12px;
 }
 
 .settings dl {
@@ -175,7 +179,7 @@
 }
 
 .issues li + li {
-	border-top: 1px solid var(--border);
+	border-top: 1px solid var(--line);
 }
 
 .issues li .btn {
@@ -209,7 +213,7 @@
 	max-height: calc(100dvh - 32px);
 	margin: auto;
 	padding: 0;
-	border: 1px solid var(--border);
+	border: 1px solid var(--line);
 	border-radius: var(--radius);
 	background: var(--surface);
 	color: var(--text);
@@ -244,7 +248,7 @@
 .add-repo .list {
 	max-height: 280px;
 	overflow: auto;
-	border: 1px solid var(--border);
+	border: 1px solid var(--line);
 	border-radius: var(--radius);
 	background: var(--bg);
 }

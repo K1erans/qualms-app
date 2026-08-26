@@ -9,6 +9,12 @@ import {
 	testsForRepository,
 	toRegisteredRepository,
 } from "./fixtures";
+import {
+	type ColorSchemePreference,
+	readColorSchemePreference,
+	syncDocumentTheme,
+	writeColorSchemePreference,
+} from "./color-scheme";
 import { readLastUsedRepoId, writeLastUsedRepoId } from "./persistence";
 import type {
 	AccountIdentity,
@@ -57,6 +63,8 @@ export class Workspace {
 	selectedIssueId = $state<string | null>(null);
 	draft = $state("");
 	lastUsedRestored = $state(false);
+	colorScheme = $state<ColorSchemePreference>("light");
+	schemeListenerAttached = false;
 
 	readonly identity: AccountIdentity = ACCOUNT;
 	readonly connectableRepos: ConnectableRepository[] = CONNECTABLE_REPOSITORIES;
@@ -102,6 +110,22 @@ export class Workspace {
 		if (lastUsedId === null) return;
 		if (!this.registeredRepos.some((repo) => repo.id === lastUsedId)) return;
 		this.selectRepository(lastUsedId);
+	}
+
+	restoreColorScheme(): void {
+		this.colorScheme = readColorSchemePreference();
+		syncDocumentTheme(this.colorScheme);
+		if (this.schemeListenerAttached) return;
+		this.schemeListenerAttached = true;
+		window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+			if (this.colorScheme === "system") syncDocumentTheme(this.colorScheme);
+		});
+	}
+
+	setColorScheme(preference: ColorSchemePreference): void {
+		this.colorScheme = preference;
+		writeColorSchemePreference(preference);
+		syncDocumentTheme(preference);
 	}
 
 	selectRepository(repositoryId: string): void {

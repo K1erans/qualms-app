@@ -40,22 +40,74 @@
 	--noise: 0;
 }
 
+@plugin "daisyui/theme" {
+	name: "qualms-dark";
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-base-100: #1c1814;
+	--color-base-200: #14110e;
+	--color-base-300: #2c261f;
+	--color-base-content: #fbf7f2;
+	--color-primary: #fbf7f2;
+	--color-primary-content: #1c1814;
+	--color-secondary: #1a1612;
+	--color-secondary-content: #fbf7f2;
+	--color-accent: #a89f94;
+	--color-accent-content: #1c1814;
+	--color-neutral: #fbf7f2;
+	--color-neutral-content: #1c1814;
+	--color-info: #a89f94;
+	--color-info-content: #1c1814;
+	--color-success: #7dba90;
+	--color-success-content: #14110e;
+	--color-warning: #a89f94;
+	--color-warning-content: #14110e;
+	--color-error: #e07a76;
+	--color-error-content: #14110e;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
 :root {
-	--bg: #f4efe8;
-	--surface: #fbf7f2;
-	--sidebar: #efe8df;
-	--hover: #e7dfd4;
-	--border: #d9d0c4;
-	--text: #1c1814;
-	--muted: #6a6158;
-	--ok: #2f5d40;
-	--fail: #8f2d2a;
-	--overlay: rgb(28 24 20 / 0.4);
 	--radius: 8px;
 	--sidebar-width: 240px;
 	--rail-width: 220px;
 	--font: "IBM Plex Sans", "Noto Sans", sans-serif;
 	--mono: "IBM Plex Mono", "Noto Sans Mono", ui-monospace, monospace;
+}
+
+[data-theme="qualms"] {
+	--bg: #f4efe8;
+	--surface: #fbf7f2;
+	--sidebar: #efe8df;
+	--hover: #e7dfd4;
+	--line: #d9d0c4;
+	--text: #1c1814;
+	--muted: #6a6158;
+	--ok: #2f5d40;
+	--fail: #8f2d2a;
+	--overlay: rgb(28 24 20 / 0.4);
+}
+
+[data-theme="qualms-dark"] {
+	--bg: #14110e;
+	--surface: #1c1814;
+	--sidebar: #1a1612;
+	--hover: #2c261f;
+	--line: #3a332c;
+	--text: #fbf7f2;
+	--muted: #a89f94;
+	--ok: #7dba90;
+	--fail: #e07a76;
+	--overlay: rgb(0 0 0 / 0.55);
 }
 
 html,

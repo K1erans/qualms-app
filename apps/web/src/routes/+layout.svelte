@@ -11,7 +11,10 @@
 	let { children } = $props();
 
 	const workspace = new Workspace();
-	if (browser) workspace.restoreLastUsed();
+	if (browser) {
+		workspace.restoreLastUsed();
+		workspace.restoreColorScheme();
+	}
 	setWorkspace(workspace);
 </script>
 
