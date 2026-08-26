@@ -246,3 +246,50 @@
 		padding: 0 4px 0 8px;
 	}
 }
+
+.auth {
+	display: flex;
+	height: 100dvh;
+	background: var(--bg);
+}
+
+.auth main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+	width: 100%;
+	max-width: 360px;
+	padding: 24px;
+	margin: auto;
+}
+
+.auth .brand {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.auth h1 {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.auth .lede,
+.auth .switch {
+	color: var(--muted);
+}
+
+.auth .github {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	margin-top: 4px;
+	color: var(--color-primary-content);
+	text-decoration: none;
+}
+
+.auth .github:hover {
+	text-decoration: none;
+}
