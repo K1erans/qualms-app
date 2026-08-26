@@ -6,7 +6,7 @@
 	const identity = workspace.identity;
 </script>
 
-<main class="settings">
+<main class="settings" >
 	<header class="top">
 		<div>
 			<h1>Settings</h1>
