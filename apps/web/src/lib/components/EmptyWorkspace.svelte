@@ -15,7 +15,7 @@
 			stay off until one is selected.
 		{/if}
 	</p>
-	<button type="button" class="btn btn-neutral btn-sm" onclick={() => workspace.openAddModal()}>
+	<button type="button" class="btn btn-primary btn-sm" onclick={() => workspace.openAddModal()}>
 		Add repository
 	</button>
 </main>

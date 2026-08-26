@@ -54,7 +54,7 @@
 				bind:value={workspace.draft}
 				onkeydown={onComposerKey}
 			/>
-			<button type="submit" class="btn btn-neutral join-item" aria-label="Send">
+			<button type="submit" class="btn btn-primary join-item" aria-label="Send">
 				<MessageSquare size={18} strokeWidth={1.75} />
 			</button>
 		</form>

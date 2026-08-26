@@ -113,7 +113,7 @@
 			<button type="button" class="btn btn-ghost btn-sm" onclick={() => workspace.closeAddModal()}>
 				Cancel
 			</button>
-			<button type="submit" class="btn btn-neutral btn-sm" disabled={pickedId === null}>
+			<button type="submit" class="btn btn-primary btn-sm" disabled={pickedId === null}>
 				Add
 			</button>
 		</div>

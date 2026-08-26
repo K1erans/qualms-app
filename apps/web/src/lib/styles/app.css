@@ -9,26 +9,26 @@
 	default: true;
 	color-scheme: light;
 
-	--color-base-100: #fbf7f2;
-	--color-base-200: #f4efe8;
-	--color-base-300: #e7dfd4;
-	--color-base-content: #1c1814;
-	--color-primary: #1c1814;
-	--color-primary-content: #fbf7f2;
-	--color-secondary: #efe8df;
-	--color-secondary-content: #1c1814;
-	--color-accent: #6a6158;
-	--color-accent-content: #fbf7f2;
-	--color-neutral: #1c1814;
-	--color-neutral-content: #fbf7f2;
-	--color-info: #6a6158;
-	--color-info-content: #fbf7f2;
+	--color-base-100: #ffffff;
+	--color-base-200: #f7f7f5;
+	--color-base-300: #e7e9eb;
+	--color-base-content: #1f2328;
+	--color-primary: #2f6feb;
+	--color-primary-content: #ffffff;
+	--color-secondary: #efefeb;
+	--color-secondary-content: #1f2328;
+	--color-accent: #2f6feb;
+	--color-accent-content: #ffffff;
+	--color-neutral: #1f2328;
+	--color-neutral-content: #f7f7f5;
+	--color-info: #656d76;
+	--color-info-content: #ffffff;
 	--color-success: #2f5d40;
-	--color-success-content: #fbf7f2;
-	--color-warning: #6a6158;
-	--color-warning-content: #fbf7f2;
+	--color-success-content: #ffffff;
+	--color-warning: #656d76;
+	--color-warning-content: #ffffff;
 	--color-error: #8f2d2a;
-	--color-error-content: #fbf7f2;
+	--color-error-content: #ffffff;
 
 	--radius-selector: 0.5rem;
 	--radius-field: 0.5rem;
@@ -45,26 +45,26 @@
 	prefersdark: true;
 	color-scheme: dark;
 
-	--color-base-100: #1c1814;
-	--color-base-200: #14110e;
-	--color-base-300: #2c261f;
-	--color-base-content: #fbf7f2;
-	--color-primary: #fbf7f2;
-	--color-primary-content: #1c1814;
-	--color-secondary: #1a1612;
-	--color-secondary-content: #fbf7f2;
-	--color-accent: #a89f94;
-	--color-accent-content: #1c1814;
-	--color-neutral: #fbf7f2;
-	--color-neutral-content: #1c1814;
-	--color-info: #a89f94;
-	--color-info-content: #1c1814;
+	--color-base-100: #202020;
+	--color-base-200: #151515;
+	--color-base-300: #292929;
+	--color-base-content: #f0f0ee;
+	--color-primary: #5b8def;
+	--color-primary-content: #151515;
+	--color-secondary: #1b1b1b;
+	--color-secondary-content: #f0f0ee;
+	--color-accent: #5b8def;
+	--color-accent-content: #151515;
+	--color-neutral: #f0f0ee;
+	--color-neutral-content: #151515;
+	--color-info: #999995;
+	--color-info-content: #151515;
 	--color-success: #7dba90;
-	--color-success-content: #14110e;
-	--color-warning: #a89f94;
-	--color-warning-content: #14110e;
+	--color-success-content: #151515;
+	--color-warning: #999995;
+	--color-warning-content: #151515;
 	--color-error: #e07a76;
-	--color-error-content: #14110e;
+	--color-error-content: #151515;
 
 	--radius-selector: 0.5rem;
 	--radius-field: 0.5rem;
@@ -85,29 +85,31 @@
 }
 
 [data-theme="qualms"] {
-	--bg: #f4efe8;
-	--surface: #fbf7f2;
-	--sidebar: #efe8df;
-	--hover: #e7dfd4;
-	--line: #d9d0c4;
-	--text: #1c1814;
-	--muted: #6a6158;
+	--bg: #f7f7f5;
+	--surface: #ffffff;
+	--sidebar: #efefeb;
+	--hover: #e7e9eb;
+	--line: #d8dee4;
+	--text: #1f2328;
+	--muted: #656d76;
+	--accent: #2f6feb;
 	--ok: #2f5d40;
 	--fail: #8f2d2a;
-	--overlay: rgb(28 24 20 / 0.4);
+	--overlay: rgb(31 35 40 / 0.4);
 }
 
 [data-theme="qualms-dark"] {
-	--bg: #14110e;
-	--surface: #1c1814;
-	--sidebar: #1a1612;
-	--hover: #2c261f;
-	--line: #3a332c;
-	--text: #fbf7f2;
-	--muted: #a89f94;
+	--bg: #151515;
+	--surface: #202020;
+	--sidebar: #1b1b1b;
+	--hover: #292929;
+	--line: #343434;
+	--text: #f0f0ee;
+	--muted: #999995;
+	--accent: #5b8def;
 	--ok: #7dba90;
 	--fail: #e07a76;
-	--overlay: rgb(0 0 0 / 0.55);
+	--overlay: rgb(0 0 0 / 0.6);
 }
 
 html,
@@ -128,7 +130,36 @@ p {
 }
 
 a {
-	color: inherit;
+	color: var(--accent);
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.menu {
+	--menu-active-bg: var(--hover);
+	--menu-active-fg: var(--text);
+}
+
+.menu :where(li > *.active),
+.btn-ghost.active {
+	background: var(--hover);
+	color: var(--text);
+}
+
+.input {
+	--input-color: var(--line);
+}
+
+.tabs-border > .tab.tab-active:before,
+.tabs-border > .tab[aria-selected="true"]:before {
+	background-color: var(--accent);
 }
 
 .sr {

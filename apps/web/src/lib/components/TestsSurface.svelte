@@ -25,7 +25,7 @@
 			<p class="note">This check is defined in Qualms. App or CI can kick it off.</p>
 			<button
 				type="button"
-				class="btn btn-neutral btn-sm"
+				class="btn btn-primary btn-sm"
 				onclick={() => workspace.openTestConversation(test.id)}
 			>
 				Open conversation

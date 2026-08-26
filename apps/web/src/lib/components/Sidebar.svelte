@@ -47,7 +47,7 @@
 	</div>
 
 	<div class="footer">
-		<button type="button" class="btn btn-sm" onclick={() => workspace.openAddModal()}>
+		<button type="button" class="btn btn-primary btn-sm" onclick={() => workspace.openAddModal()}>
 			Add repository
 		</button>
 		<button
