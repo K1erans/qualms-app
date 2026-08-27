@@ -13,5 +13,11 @@
 	},
 	"observability": {
 		"enabled": true
-	}
+	},
+	"routes": [
+		{
+			"pattern": "app.qualms.sh",
+			"custom_domain": true
+		}
+	]
 }
