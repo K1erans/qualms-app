@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { page } from "$app/state";
 	import settingsIcon from "$lib/assets/settings_icon.svg";
 	import PanelToggle from "./PanelToggle.svelte";
 	import { getWorkspace } from "$lib/shell/context";
+	import { ACCOUNT } from "$lib/shell/fixtures";
 
 	const workspace = getWorkspace();
+	const identity = $derived(page.data.identity ?? ACCOUNT);
 </script>
 
 <aside id="repo-sidebar" class={{ sidebar: true, open: workspace.sidebarOpen }}>
@@ -62,7 +65,7 @@
 			aria-current={workspace.settingsOpen ? "page" : undefined}
 			onclick={() => workspace.openSettings()}
 		>
-			<span class="who">{workspace.identity.displayName}</span>
+			<span class="who">{identity.displayName}</span>
 			<img class="gear" src={settingsIcon} alt="" width="16" height="16" />
 		</button>
 	</div>

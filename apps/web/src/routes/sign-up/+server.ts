@@ -1,0 +1,9 @@
+import { redirect } from "@sveltejs/kit";
+import { authKit } from "@workos/authkit-sveltekit";
+import type { RequestHandler } from "./$types";
+
+export const GET: RequestHandler = async ({ url }) => {
+	const returnTo = url.searchParams.get("returnTo") ?? "/dashboard";
+	const signUpUrl = await authKit.getSignUpUrl({ returnTo });
+	redirect(302, signUpUrl);
+};

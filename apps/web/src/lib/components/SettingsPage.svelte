@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { page } from "$app/state";
 	import { COLOR_SCHEME_OPTIONS } from "$lib/shell/color-scheme";
 	import { getWorkspace } from "$lib/shell/context";
+	import { ACCOUNT } from "$lib/shell/fixtures";
 
 	const workspace = getWorkspace();
-	const identity = workspace.identity;
+	const identity = $derived(page.data.identity ?? ACCOUNT);
 </script>
 
 <main class="settings" >
@@ -61,5 +63,13 @@
 	<section>
 		<h2>Notifications</h2>
 		<p>Findings and test runs would land here. Delivery is not wired.</p>
+	</section>
+
+	<section>
+		<h2>Session</h2>
+		<p>Sign out of Qualms on this browser.</p>
+		<form method="POST" action="/logout">
+			<button type="submit" class="btn btn-sm">Sign out</button>
+		</form>
 	</section>
 </main>

@@ -7,6 +7,7 @@
 			title: "Sign in · Qualms",
 			lede: "Continue with the GitHub account you'll connect repositories from.",
 			action: "Continue with GitHub",
+			authHref: "/sign-in",
 			switchPrompt: "New to Qualms?",
 			switchHref: "/signup",
 			switchLabel: "Create an account",
@@ -16,15 +17,15 @@
 			title: "Create an account · Qualms",
 			lede: "GitHub creates the Qualms account. Repositories are added after you sign in.",
 			action: "Create account with GitHub",
+			authHref: "/sign-up",
 			switchPrompt: "Already have an account?",
 			switchHref: "/",
 			switchLabel: "Sign in",
 		},
 	} as const;
 
-	const { heading, title, lede, action, switchPrompt, switchHref, switchLabel } = $derived(
-		copy[mode],
-	);
+	const { heading, title, lede, action, authHref, switchPrompt, switchHref, switchLabel } =
+		$derived(copy[mode]);
 </script>
 
 <svelte:head>
@@ -36,7 +37,7 @@
 		<p class="brand">Qualms</p>
 		<h1>{heading}</h1>
 		<p class="lede">{lede}</p>
-		<a href="/dashboard" class="btn btn-primary github">
+		<a href={authHref} class="btn btn-primary github" data-sveltekit-reload>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="16"

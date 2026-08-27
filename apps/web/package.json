@@ -22,6 +22,7 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
-		"@lucide/svelte": "^1.34.0"
+		"@lucide/svelte": "^1.34.0",
+		"@workos/authkit-sveltekit": "^0.3.0"
 	}
 }
