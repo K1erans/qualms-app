@@ -14,7 +14,9 @@ declare global {
 			identity: AccountIdentity | null;
 		}
 		// interface PageState {}
-		// interface Platform {}
+		interface Platform {
+			env: Env;
+		}
 	}
 }
 

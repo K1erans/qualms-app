@@ -21,6 +21,7 @@ tools/
 # sveltekit
 .svelte-kit/
 .output/
+.wrangler/
 
 # production
 /build

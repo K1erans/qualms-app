@@ -1,0 +1,17 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "qualms",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2026-08-27",
+	"compatibility_flags": ["nodejs_compat"],
+	"build": {
+		"command": "npm run build"
+	},
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"observability": {
+		"enabled": true
+	}
+}

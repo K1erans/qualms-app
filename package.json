@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "deploy": "npm run deploy -w web",
     "lint": "oxlint && turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test"
