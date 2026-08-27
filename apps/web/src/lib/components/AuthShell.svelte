@@ -1,15 +1,29 @@
 <script lang="ts">
 	let { mode }: { mode: "signin" | "signup" } = $props();
 
-	const heading = $derived(mode === "signin" ? "Sign in" : "Create an account");
-	const title = $derived(mode === "signin" ? "Sign in · Qualms" : "Create an account · Qualms");
-	const lede = $derived(
-		mode === "signin"
-			? "Continue with the GitHub account you'll connect repositories from."
-			: "GitHub creates the Qualms account. Repositories are added after you sign in.",
-	);
-	const action = $derived(
-		mode === "signin" ? "Continue with GitHub" : "Create account with GitHub",
+	const copy = {
+		signin: {
+			heading: "Sign in",
+			title: "Sign in · Qualms",
+			lede: "Continue with the GitHub account you'll connect repositories from.",
+			action: "Continue with GitHub",
+			switchPrompt: "New to Qualms?",
+			switchHref: "/signup",
+			switchLabel: "Create an account",
+		},
+		signup: {
+			heading: "Create an account",
+			title: "Create an account · Qualms",
+			lede: "GitHub creates the Qualms account. Repositories are added after you sign in.",
+			action: "Create account with GitHub",
+			switchPrompt: "Already have an account?",
+			switchHref: "/",
+			switchLabel: "Sign in",
+		},
+	} as const;
+
+	const { heading, title, lede, action, switchPrompt, switchHref, switchLabel } = $derived(
+		copy[mode],
 	);
 </script>
 
@@ -37,14 +51,8 @@
 			</svg>
 			{action}
 		</a>
-		{#if mode === "signin"}
-			<p class="switch">
-				New to Qualms? <a href="/signup">Create an account</a>
-			</p>
-		{:else}
-			<p class="switch">
-				Already have an account? <a href="/">Sign in</a>
-			</p>
-		{/if}
+		<p class="switch">
+			{switchPrompt} <a href={switchHref}>{switchLabel}</a>
+		</p>
 	</main>
 </div>
