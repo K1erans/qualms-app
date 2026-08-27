@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+	themes: false;
+}
+
+@plugin "daisyui/theme" {
+	name: "qualms";
+	default: true;
+	color-scheme: light;
+
+	--color-base-100: #ffffff;
+	--color-base-200: #f7f7f5;
+	--color-base-300: #e7e9eb;
+	--color-base-content: #1f2328;
+	--color-primary: #2f6feb;
+	--color-primary-content: #ffffff;
+	--color-secondary: #efefeb;
+	--color-secondary-content: #1f2328;
+	--color-accent: #2f6feb;
+	--color-accent-content: #ffffff;
+	--color-neutral: #1f2328;
+	--color-neutral-content: #f7f7f5;
+	--color-info: #656d76;
+	--color-info-content: #ffffff;
+	--color-success: #2f5d40;
+	--color-success-content: #ffffff;
+	--color-warning: #656d76;
+	--color-warning-content: #ffffff;
+	--color-error: #8f2d2a;
+	--color-error-content: #ffffff;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
+@plugin "daisyui/theme" {
+	name: "qualms-dark";
+	prefersdark: true;
+	color-scheme: dark;
+
+	--color-base-100: #202020;
+	--color-base-200: #151515;
+	--color-base-300: #292929;
+	--color-base-content: #f0f0ee;
+	--color-primary: #5b8def;
+	--color-primary-content: #151515;
+	--color-secondary: #1b1b1b;
+	--color-secondary-content: #f0f0ee;
+	--color-accent: #5b8def;
+	--color-accent-content: #151515;
+	--color-neutral: #f0f0ee;
+	--color-neutral-content: #151515;
+	--color-info: #999995;
+	--color-info-content: #151515;
+	--color-success: #7dba90;
+	--color-success-content: #151515;
+	--color-warning: #999995;
+	--color-warning-content: #151515;
+	--color-error: #e07a76;
+	--color-error-content: #151515;
+
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 0.5rem;
+	--size-selector: 0.25rem;
+	--size-field: 0.25rem;
+	--border: 1px;
+	--depth: 0;
+	--noise: 0;
+}
+
+:root {
+	--radius: 8px;
+	--sidebar-width: 240px;
+	--rail-width: 220px;
+	--font: "IBM Plex Sans", "Noto Sans", sans-serif;
+	--mono: "IBM Plex Mono", "Noto Sans Mono", ui-monospace, monospace;
+}
+
+[data-theme="qualms"] {
+	--bg: #f7f7f5;
+	--surface: #ffffff;
+	--sidebar: #efefeb;
+	--hover: #e7e9eb;
+	--line: #d8dee4;
+	--text: #1f2328;
+	--muted: #656d76;
+	--accent: #2f6feb;
+	--ok: #2f5d40;
+	--fail: #8f2d2a;
+	--overlay: rgb(31 35 40 / 0.4);
+}
+
+[data-theme="qualms-dark"] {
+	--bg: #151515;
+	--surface: #202020;
+	--sidebar: #1b1b1b;
+	--hover: #292929;
+	--line: #343434;
+	--text: #f0f0ee;
+	--muted: #999995;
+	--accent: #5b8def;
+	--ok: #7dba90;
+	--fail: #e07a76;
+	--overlay: rgb(0 0 0 / 0.6);
+}
+
+html,
+body {
+	height: 100%;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font);
+	font-size: 14px;
+	line-height: 1.45;
+}
+
+h1,
+h2,
+h3,
+p {
+	margin: 0;
+}
+
+a {
+	color: var(--accent);
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+
+.menu {
+	--menu-active-bg: var(--hover);
+	--menu-active-fg: var(--text);
+}
+
+.menu :where(li > *.active),
+.btn-ghost.active {
+	background: var(--hover);
+	color: var(--text);
+}
+
+.input {
+	--input-color: var(--line);
+}
+
+.tabs-border > .tab.tab-active:before,
+.tabs-border > .tab[aria-selected="true"]:before {
+	background-color: var(--accent);
+}
+
+.sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+}

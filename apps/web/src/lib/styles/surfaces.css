@@ -1,0 +1,302 @@
+.empty {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+	max-width: 420px;
+	padding: 24px;
+	margin: auto;
+}
+
+.empty h1 {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.empty p {
+	color: var(--muted);
+}
+
+.empty .btn {
+	width: fit-content;
+}
+
+.settings {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+	min-width: 0;
+	min-height: 0;
+	padding: 24px;
+	overflow: auto;
+}
+
+.settings .top {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.settings h1 {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.settings h2 {
+	margin-bottom: 8px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.settings .who,
+.settings p {
+	color: var(--muted);
+}
+
+.settings section {
+	padding-top: 16px;
+	border-top: 1px solid var(--line);
+}
+
+.settings .scheme {
+	margin-top: 12px;
+}
+
+.settings dl {
+	display: grid;
+	gap: 12px;
+	margin: 0;
+}
+
+.settings dt {
+	color: var(--muted);
+	font-size: 12px;
+}
+
+.settings dd {
+	margin: 2px 0 0;
+}
+
+.tests,
+.issues {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+}
+
+.tests .list,
+.tests .detail,
+.issues .list,
+.issues .detail {
+	max-width: 860px;
+	padding: 20px;
+}
+
+.issues .list,
+.issues .detail {
+	max-width: 720px;
+}
+
+.tests .intro,
+.tests .none,
+.tests .summary,
+.tests .run,
+.tests .note,
+.tests .id,
+.tests .when,
+.tests .num,
+.issues .intro,
+.issues .none,
+.issues .meta,
+.issues .note {
+	color: var(--muted);
+}
+
+.tests .intro,
+.tests .none,
+.issues .intro,
+.issues .none {
+	margin-bottom: 16px;
+}
+
+.tests table {
+	width: 100%;
+}
+
+.tests .row {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	height: auto;
+	min-height: 0;
+	padding: 0;
+	white-space: normal;
+}
+
+.tests .name {
+	font-weight: 500;
+}
+
+.tests .passed {
+	color: var(--ok);
+}
+
+.tests .failed {
+	color: var(--fail);
+}
+
+.tests .when {
+	display: block;
+	font-size: 12px;
+}
+
+.tests h2,
+.issues h2 {
+	margin: 8px 0 4px;
+	font-size: 18px;
+}
+
+.tests .summary {
+	margin: 12px 0;
+}
+
+.tests .note {
+	margin: 8px 0 16px;
+}
+
+.tests .detail .btn {
+	width: fit-content;
+}
+
+.issues ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.issues li + li {
+	border-top: 1px solid var(--line);
+}
+
+.issues li .btn {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	padding: 12px 0;
+	white-space: normal;
+}
+
+.issues .title {
+	font-weight: 500;
+}
+
+.issues .body {
+	margin: 16px 0;
+	white-space: pre-wrap;
+}
+
+.issues .note {
+	margin-top: 16px;
+}
+
+.add-repo {
+	width: min(480px, calc(100vw - 32px));
+	height: fit-content;
+	max-height: calc(100dvh - 32px);
+	margin: auto;
+	padding: 0;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--surface);
+	color: var(--text);
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+
+.add-repo::backdrop {
+	background: var(--overlay);
+}
+
+.add-repo form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 20px;
+}
+
+.add-repo h1 {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.add-repo .hint {
+	color: var(--muted);
+}
+
+.add-repo .search .input {
+	width: 100%;
+	background: var(--bg);
+}
+
+.add-repo .list {
+	max-height: 280px;
+	overflow: auto;
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	background: var(--bg);
+}
+
+.add-repo .group {
+	padding: 8px 10px 4px;
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.add-repo .option {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	padding: 8px 10px;
+	border-radius: 0;
+	white-space: normal;
+}
+
+.add-repo .option.picked {
+	background: var(--hover);
+}
+
+.add-repo .full {
+	font-family: var(--mono);
+	font-size: 13px;
+}
+
+.add-repo .desc {
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.add-repo .none {
+	padding: 16px 10px;
+	color: var(--muted);
+}
+
+.add-repo .actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}

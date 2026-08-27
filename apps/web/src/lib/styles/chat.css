@@ -1,0 +1,156 @@
+.chat {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+	position: relative;
+}
+
+.chat .rail {
+	display: none;
+	flex-direction: column;
+	width: var(--rail-width);
+	border-left: 1px solid var(--line);
+	background: var(--bg);
+	overflow: auto;
+}
+
+.chat .rail.open {
+	display: flex;
+}
+
+.chat .rail-head {
+	padding: 12px;
+	font-weight: 500;
+}
+
+.chat .rail-backdrop {
+	display: none;
+}
+
+.chat .rail-empty {
+	padding: 0 12px 8px;
+	color: var(--muted);
+}
+
+.chat .rail .menu {
+	margin: 0;
+	padding: 0 8px 8px;
+	width: 100%;
+}
+
+.chat .thread {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	height: auto;
+	min-height: 0;
+	padding: 8px;
+	white-space: normal;
+}
+
+.chat .thread .title {
+	font-weight: 500;
+}
+
+.chat .thread .meta {
+	color: var(--muted);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.chat .transcript {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.chat .messages {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	overflow: auto;
+	padding: 16px 20px 8px;
+}
+
+.chat article {
+	width: fit-content;
+	max-width: min(520px, 70%);
+	margin-bottom: 16px;
+}
+
+.chat article.assistant {
+	align-self: flex-start;
+}
+
+.chat article.user {
+	align-self: flex-end;
+}
+
+.chat .who {
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--muted);
+}
+
+.chat article.user .who {
+	text-align: right;
+}
+
+.chat .body {
+	white-space: pre-wrap;
+}
+
+.chat article.user .body {
+	padding: 8px 10px;
+	border-radius: var(--radius);
+	background: var(--hover);
+}
+
+.chat .blank {
+	color: var(--muted);
+}
+
+.chat .composer {
+	display: flex;
+	width: 100%;
+	padding: 12px 20px 16px;
+	border-top: 1px solid var(--line);
+	background: var(--surface);
+}
+
+.chat .composer .input {
+	flex: 1;
+	min-width: 0;
+	height: 2.5rem;
+	background: var(--bg);
+}
+
+.chat .composer .btn {
+	height: 2.5rem;
+	min-height: 2.5rem;
+}
+
+@media (max-width: 799px) {
+	.chat .rail.open {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		z-index: 10;
+		background: var(--surface);
+		box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+	}
+
+	.chat .rail-backdrop {
+		display: block;
+		position: absolute;
+		inset: 0;
+		z-index: 9;
+		border: 0;
+		border-radius: 0;
+		background: var(--overlay);
+	}
+}
