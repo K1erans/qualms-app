@@ -13,12 +13,15 @@ export default defineConfig({
 		".pi/**",
 		".roo/**",
 		".windsurf/**",
-		"tools/oxlint/anti-slop/**",
+		"tools/oxlint/**",
+		"apps/web/worker-configuration.d.ts",
 	],
 	jsPlugins: [
 		{ name: "anti-slop", specifier: "./tools/oxlint/anti-slop/index.ts" },
+		{ name: "no-comments", specifier: "./oxlint/no-comments.ts" },
 	],
 	rules: {
+		"no-comments/no-comments": "error",
 		"anti-slop/no-chained-type-assertions": "error",
 		"anti-slop/no-conditional-empty-object-spread": "error",
 		"anti-slop/no-known-value-widening": "error",
