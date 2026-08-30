@@ -18,9 +18,11 @@ let localDb: Database | undefined;
 /**
  * Prefer the Hyperdrive binding on Workers; fall back to DATABASE_URL for
  * `vite dev` and drizzle-kit, where `platform.env` is unavailable.
+ *
+ *   getDb(resolveConnectionString(platform?.env.HYPERDRIVE?.connectionString))
  */
-export function resolveConnectionString(hyperdrive?: Hyperdrive): string {
-	const connectionString = hyperdrive?.connectionString ?? env.DATABASE_URL;
+export function resolveConnectionString(hyperdriveConnectionString?: string): string {
+	const connectionString = hyperdriveConnectionString ?? env.DATABASE_URL;
 	if (!connectionString) {
 		throw new Error(
 			"Database is not configured. Set DATABASE_URL or bind Hyperdrive as HYPERDRIVE.",
