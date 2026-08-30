@@ -14,13 +14,14 @@
 	"observability": {
 		"enabled": true
 	},
-	// Replace `id` with the value from:
-	// wrangler hyperdrive create qualms-db --connection-string="postgresql://user:pass@your-rds-host.rds.amazonaws.com:5432/dbname"
-	"hyperdrive": [
+	// Create with: wrangler d1 create qualms
+	// Then replace database_id with the printed UUID.
+	"d1_databases": [
 		{
-			"binding": "HYPERDRIVE",
-			"id": "<your-hyperdrive-config-id>",
-			"localConnectionString": "postgresql://user:password@localhost:5432/qualms"
+			"binding": "DB",
+			"database_name": "qualms",
+			"database_id": "00000000-0000-0000-0000-000000000000",
+			"migrations_dir": "drizzle"
 		}
 	],
 	"routes": [

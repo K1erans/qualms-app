@@ -1,6 +1,7 @@
-import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
-export const repositories = pgTable(
+export const repositories = sqliteTable(
 	"repositories",
 	{
 		id: text("id").primaryKey(),
@@ -8,12 +9,12 @@ export const repositories = pgTable(
 		url: text("url").notNull(),
 		name: text("name").notNull(),
 		description: text("description").notNull().default(""),
-		createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+		createdAt: integer("created_at", { mode: "timestamp_ms" })
 			.notNull()
-			.defaultNow(),
-		updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
+			.default(sql`(unixepoch() * 1000)`),
+		updatedAt: integer("updated_at", { mode: "timestamp_ms" })
 			.notNull()
-			.defaultNow(),
+			.default(sql`(unixepoch() * 1000)`),
 	},
 	(table) => [
 		uniqueIndex("repositories_org_id_url_idx").on(table.orgId, table.url),
