@@ -19,5 +19,11 @@
 			"pattern": "app.qualms.sh",
 			"custom_domain": true
 		}
+	],
+	"hyperdrive": [
+		{
+			"binding": "HYPERDRIVE",
+			"id": "1ad5c147f3f54be5a0da0cbb838b2d5a"
+		}
 	]
 }

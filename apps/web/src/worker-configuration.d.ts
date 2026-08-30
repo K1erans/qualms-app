@@ -1,4 +1,5 @@
 interface Env {
+	HYPERDRIVE: Hyperdrive;
 	ASSETS: Fetcher;
 	WORKOS_CLIENT_ID: string;
 	WORKOS_API_KEY: string;
