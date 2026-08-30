@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle, type AnyD1Database } from "drizzle-orm/d1";
 import * as schema from "./schema";
 
 /**
@@ -9,7 +9,7 @@ import * as schema from "./schema";
  * `vite dev` and `wrangler dev` both populate `platform.env.DB` via the
  * Cloudflare adapter / Wrangler. There is no connection string.
  */
-export function getDb(database: D1Database) {
+export function getDb(database: AnyD1Database) {
 	return drizzle(database, { schema });
 }
 

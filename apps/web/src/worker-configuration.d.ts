@@ -2,7 +2,7 @@
 // `npm run cf-typegen` writes Wrangler's generated declaration outside src.
 interface Env {
 	ASSETS: Fetcher;
-	DB: D1Database;
+	DB: import("drizzle-orm/d1").AnyD1Database;
 	WORKOS_CLIENT_ID: string;
 	WORKOS_API_KEY: string;
 	WORKOS_REDIRECT_URI: string;
