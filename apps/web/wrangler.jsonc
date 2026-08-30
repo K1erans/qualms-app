@@ -14,6 +14,15 @@
 	"observability": {
 		"enabled": true
 	},
+	// Replace `id` with the value from:
+	// wrangler hyperdrive create qualms-db --connection-string="postgresql://user:pass@your-rds-host.rds.amazonaws.com:5432/dbname"
+	"hyperdrive": [
+		{
+			"binding": "HYPERDRIVE",
+			"id": "<your-hyperdrive-config-id>",
+			"localConnectionString": "postgresql://user:password@localhost:5432/qualms"
+		}
+	],
 	"routes": [
 		{
 			"pattern": "app.qualms.sh",

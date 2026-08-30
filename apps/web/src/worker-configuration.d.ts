@@ -2,6 +2,7 @@
 // `npm run cf-typegen` writes Wrangler's generated declaration outside src.
 interface Env {
 	ASSETS: Fetcher;
+	HYPERDRIVE: Hyperdrive;
 	WORKOS_CLIENT_ID: string;
 	WORKOS_API_KEY: string;
 	WORKOS_REDIRECT_URI: string;
