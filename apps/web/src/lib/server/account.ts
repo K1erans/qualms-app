@@ -141,7 +141,7 @@ async function upsertAccount(
 	});
 }
 
-export async function ensureAccount(event: RequestEvent): Promise<ProvisionedAccount | null> {
+export async function ensureAccount(event: RequestEvent): Promise<ProvisionedAccount> {
 	const existing = event.locals.account;
 	if (existing) return existing;
 
