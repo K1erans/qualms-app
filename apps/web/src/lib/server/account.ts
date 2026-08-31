@@ -1,6 +1,6 @@
 import type { RequestEvent } from "@sveltejs/kit";
 import { and, eq } from "drizzle-orm";
-import { deriveAccountProfile, type AuthProfile } from "@qualms/core";
+import { deriveAccountProfile, type AuthProfile } from "$lib/shell/identity";
 import type { OrganizationKind } from "$lib/shell/types";
 import { getDb, type Database } from "./db";
 import { organisationMembers, organisations, users } from "./schema";
