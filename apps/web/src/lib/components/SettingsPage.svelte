@@ -57,7 +57,10 @@
 
 	<section>
 		<h2>Organization</h2>
-		<p>{identity.organization} — dummy membership for this shell. No org admin here yet.</p>
+		<p>{identity.organization}</p>
+		{#if identity.organizationKind === "personal"}
+			<p>Personal</p>
+		{/if}
 	</section>
 
 	<section>

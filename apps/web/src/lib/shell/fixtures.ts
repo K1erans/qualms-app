@@ -12,6 +12,7 @@ export const ACCOUNT: AccountIdentity = {
 	handle: "mara",
 	email: "mara@acme.example",
 	organization: "Acme",
+	organizationKind: "organisation",
 };
 
 export const SEED_REPOSITORIES: RegisteredRepository[] = [

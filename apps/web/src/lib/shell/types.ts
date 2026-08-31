@@ -66,9 +66,12 @@ export type ChatThread = {
 	updatedAt: string;
 };
 
+export type OrganizationKind = "personal" | "organisation";
+
 export type AccountIdentity = {
 	displayName: string;
 	handle: string;
 	email: string;
 	organization: string;
+	organizationKind: OrganizationKind;
 };

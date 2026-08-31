@@ -14,15 +14,16 @@ CASCADE;
 CREATE TABLE users (
   user_id BIGSERIAL PRIMARY KEY,
   workos_user_id VARCHAR(255) NOT NULL UNIQUE,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE organisations (
   organisation_id BIGSERIAL PRIMARY KEY,
-  workos_organization_id VARCHAR(255) NOT NULL UNIQUE,
+  workos_organization_id VARCHAR(255) UNIQUE,
   organisation_name VARCHAR(255) NOT NULL,
+  personal_owner_user_id BIGINT UNIQUE REFERENCES users (user_id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -30,7 +31,7 @@ CREATE TABLE organisation_members (
   organisation_member_id BIGSERIAL PRIMARY KEY,
   organisation_id BIGINT NOT NULL REFERENCES organisations (organisation_id) ON DELETE CASCADE,
   user_id BIGINT NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
-  workos_membership_id VARCHAR(255) NOT NULL UNIQUE,
+  workos_membership_id VARCHAR(255) UNIQUE,
   role VARCHAR(50) NOT NULL,
   joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (organisation_id, user_id)
@@ -78,6 +79,7 @@ CREATE TABLE run_steps (
   UNIQUE (test_run_id, sequence_number)
 );
 
+CREATE INDEX idx_users_email ON users (email);
 CREATE INDEX idx_organisation_members_organisation_id ON organisation_members (organisation_id);
 CREATE INDEX idx_organisation_members_user_id ON organisation_members (user_id);
 CREATE INDEX idx_repositories_organisation_id ON repositories (organisation_id);

@@ -1,19 +1,16 @@
+import { deriveAccountProfile, type AuthProfile } from "@qualms/core";
 import type { AccountIdentity } from "./types";
 
-export function identityFromAuthUser(user: {
-	email: string;
-	firstName: string | null;
-	lastName: string | null;
-}): AccountIdentity {
-	const displayName = [user.firstName, user.lastName]
-		.filter((part): part is string => Boolean(part?.trim()))
-		.join(" ");
-	const handle = user.email.split("@")[0] ?? user.email;
-
+export function identityFromAuthUser(
+	user: AuthProfile,
+	organisationName: string,
+): AccountIdentity {
+	const profile = deriveAccountProfile(user);
 	return {
-		displayName: displayName || handle,
-		handle,
+		displayName: profile.displayName,
+		handle: profile.handle,
 		email: user.email,
-		organization: "Not linked",
+		organization: organisationName,
+		organizationKind: "personal",
 	};
 }
