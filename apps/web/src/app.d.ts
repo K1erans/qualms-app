@@ -1,6 +1,6 @@
 import type { AuthKitAuth, User } from "@workos/authkit-sveltekit";
 import type { AccountIdentity } from "$lib/shell/types";
-import type { Sql } from "$lib/server/db";
+import type { Database, Sql } from "$lib/server/db";
 import type { ProvisionedAccount } from "$lib/server/account";
 
 declare global {
@@ -8,6 +8,7 @@ declare global {
 		interface Locals {
 			auth: AuthKitAuth;
 			sql?: Sql;
+			db?: Database;
 			account?: ProvisionedAccount;
 		}
 		interface PageData {

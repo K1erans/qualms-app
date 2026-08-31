@@ -11,9 +11,9 @@
     "build": "turbo run build",
     "deploy": "npm run deploy -w web",
     "lint": "oxlint && turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "typecheck": "tsc --noEmit && turbo run typecheck",
     "test": "turbo run test",
-    "db:schema": "node --env-file=.env.local --input-type=module -e \"import { execFileSync } from 'node:child_process'; const url = process.env.DATABASE_URL; if (!url) { throw new Error('DATABASE_URL is not set'); } execFileSync('psql', [url, '-f', 'db/schema.sql'], { stdio: 'inherit' });\""
+    "db:schema": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push"
   },
   "devEngines": {
     "packageManager": {

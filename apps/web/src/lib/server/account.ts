@@ -1,7 +1,9 @@
 import type { RequestEvent } from "@sveltejs/kit";
+import { and, eq } from "drizzle-orm";
 import { deriveAccountProfile, type AuthProfile } from "@qualms/core";
 import type { OrganizationKind } from "$lib/shell/types";
-import { getDb, type Sql } from "./db";
+import { getDb, type Database } from "./db";
+import { organisationMembers, organisations, users } from "./schema";
 
 export type ProvisionedAccount = {
 	userId: string;
@@ -16,104 +18,124 @@ export type ProvisionedAccount = {
 type AuthUser = AuthProfile & { id: string };
 
 type AccountRow = {
-	user_id: string;
+	userId: bigint;
 	email: string;
 	name: string | null;
-	organisation_id: string;
-	organisation_name: string;
-	personal_owner_user_id: string | null;
+	organisationId: bigint;
+	organisationName: string;
+	personalOwnerUserId: bigint | null;
 	role: string;
 };
 
-type UserRow = {
-	user_id: string;
-	email: string;
-	name: string | null;
-};
-
-type OrganisationRow = {
-	organisation_id: string;
-	organisation_name: string;
-};
-
-function organisationKindFromOwner(personalOwnerUserId: string | null): OrganizationKind {
+function organisationKindFromOwner(personalOwnerUserId: bigint | null): OrganizationKind {
 	return personalOwnerUserId === null ? "organisation" : "personal";
 }
 
 function toAccount(row: AccountRow): ProvisionedAccount {
 	return {
-		userId: row.user_id,
-		organisationId: row.organisation_id,
-		organisationName: row.organisation_name,
-		organisationKind: organisationKindFromOwner(row.personal_owner_user_id),
+		userId: row.userId.toString(),
+		organisationId: row.organisationId.toString(),
+		organisationName: row.organisationName,
+		organisationKind: organisationKindFromOwner(row.personalOwnerUserId),
 		role: row.role,
 		email: row.email,
 		name: row.name,
 	};
 }
 
-async function findAccount(sql: Sql, workosUserId: string): Promise<AccountRow | null> {
-	const rows = await sql<AccountRow[]>`
-		SELECT
-			u.user_id::text AS user_id,
-			u.email,
-			u.name,
-			o.organisation_id::text AS organisation_id,
-			o.organisation_name,
-			o.personal_owner_user_id::text AS personal_owner_user_id,
-			m.role
-		FROM users u
-		JOIN organisations o ON o.personal_owner_user_id = u.user_id
-		JOIN organisation_members m
-			ON m.organisation_id = o.organisation_id AND m.user_id = u.user_id
-		WHERE u.workos_user_id = ${workosUserId}
-	`;
+async function findAccount(db: Database, workosUserId: string): Promise<AccountRow | null> {
+	const rows = await db
+		.select({
+			userId: users.userId,
+			email: users.email,
+			name: users.name,
+			organisationId: organisations.organisationId,
+			organisationName: organisations.organisationName,
+			personalOwnerUserId: organisations.personalOwnerUserId,
+			role: organisationMembers.role,
+		})
+		.from(users)
+		.innerJoin(organisations, eq(organisations.personalOwnerUserId, users.userId))
+		.innerJoin(
+			organisationMembers,
+			and(
+				eq(organisationMembers.organisationId, organisations.organisationId),
+				eq(organisationMembers.userId, users.userId),
+			),
+		)
+		.where(eq(users.workosUserId, workosUserId))
+		.limit(1);
 	return rows[0] ?? null;
 }
 
 async function upsertAccount(
-	sql: Sql,
+	db: Database,
 	user: AuthUser,
 	cachedName: string | null,
 	workspaceName: string,
 ): Promise<AccountRow> {
-	return sql.begin(async (tx) => {
-		const [userRow] = await tx<UserRow[]>`
-			INSERT INTO users (workos_user_id, email, name)
-			VALUES (${user.id}, ${user.email}, ${cachedName})
-			ON CONFLICT (workos_user_id) DO UPDATE SET
-				email = EXCLUDED.email,
-				name = EXCLUDED.name
-			RETURNING user_id::text AS user_id, email, name
-		`;
+	return db.transaction(async (tx) => {
+		const [userRow] = await tx
+			.insert(users)
+			.values({
+				workosUserId: user.id,
+				email: user.email,
+				name: cachedName,
+			})
+			.onConflictDoUpdate({
+				target: users.workosUserId,
+				set: {
+					email: user.email,
+					name: cachedName,
+				},
+			})
+			.returning({
+				userId: users.userId,
+				email: users.email,
+				name: users.name,
+			});
 		if (!userRow) {
 			throw new Error("Failed to persist user");
 		}
 
-		const [organisationRow] = await tx<OrganisationRow[]>`
-			INSERT INTO organisations (organisation_name, personal_owner_user_id)
-			VALUES (${workspaceName}, ${userRow.user_id}::bigint)
-			ON CONFLICT (personal_owner_user_id) DO UPDATE SET
-				organisation_name = EXCLUDED.organisation_name
-			RETURNING organisation_id::text AS organisation_id, organisation_name
-		`;
+		const [organisationRow] = await tx
+			.insert(organisations)
+			.values({
+				organisationName: workspaceName,
+				personalOwnerUserId: userRow.userId,
+			})
+			.onConflictDoUpdate({
+				target: organisations.personalOwnerUserId,
+				set: {
+					organisationName: workspaceName,
+				},
+			})
+			.returning({
+				organisationId: organisations.organisationId,
+				organisationName: organisations.organisationName,
+			});
 		if (!organisationRow) {
 			throw new Error("Failed to persist organisation");
 		}
 
-		await tx`
-			INSERT INTO organisation_members (organisation_id, user_id, role)
-			VALUES (${organisationRow.organisation_id}::bigint, ${userRow.user_id}::bigint, 'owner')
-			ON CONFLICT (organisation_id, user_id) DO NOTHING
-		`;
+		await tx
+			.insert(organisationMembers)
+			.values({
+				organisationId: organisationRow.organisationId,
+				userId: userRow.userId,
+				role: "owner",
+			})
+			.onConflictDoNothing({
+				target: [organisationMembers.organisationId, organisationMembers.userId],
+			});
 
 		return {
-			user_id: userRow.user_id,
+			userId: userRow.userId,
 			email: userRow.email,
 			name: userRow.name,
-			organisation_id: organisationRow.organisation_id,
-			organisation_name: organisationRow.organisation_name,
-			personal_owner_user_id: userRow.user_id,
+			organisationId: organisationRow.organisationId,
+			organisationName: organisationRow.organisationName,
+			personalOwnerUserId: userRow.userId,
 			role: "owner",
 		};
 	});
@@ -131,19 +153,15 @@ export async function ensureAccount(event: RequestEvent): Promise<ProvisionedAcc
 		firstName: user.firstName,
 		lastName: user.lastName,
 	});
-	const sql = getDb(event);
-	const found = await findAccount(sql, user.id);
-	if (
-		found &&
-		found.email === user.email &&
-		found.name === profile.cachedName
-	) {
+	const db = getDb(event);
+	const found = await findAccount(db, user.id);
+	if (found && found.email === user.email && found.name === profile.cachedName) {
 		const account = toAccount(found);
 		event.locals.account = account;
 		return account;
 	}
 
-	const written = await upsertAccount(sql, user, profile.cachedName, profile.workspaceName);
+	const written = await upsertAccount(db, user, profile.cachedName, profile.workspaceName);
 	const account = toAccount(written);
 	event.locals.account = account;
 	return account;

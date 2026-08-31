@@ -1,5 +1,7 @@
--- Qualms Postgres schema (re-runnable bootstrap).
--- WorkOS is the identity source of truth; display fields are cached locally.
+-- Qualms Postgres schema (SQL snapshot).
+-- Source of truth: apps/web/src/lib/server/schema.ts
+-- Apply with: npm run db:schema
+
 
 DROP TABLE IF EXISTS
   run_steps,
