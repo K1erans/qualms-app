@@ -33,10 +33,12 @@ export async function closeDb(event: RequestEvent): Promise<void> {
 	if (!sql) return;
 	event.locals.sql = undefined;
 	event.locals.db = undefined;
-	const closed = sql.end({ timeout: 5 });
-	const waitUntil = event.platform?.ctx?.waitUntil;
-	if (waitUntil) {
-		waitUntil(closed);
+	const closed = sql.end({ timeout: 5 }).catch(() => {
+		console.error("Failed to close database connection");
+	});
+	const ctx = event.platform?.ctx;
+	if (ctx) {
+		ctx.waitUntil(closed);
 		return;
 	}
 	await closed;

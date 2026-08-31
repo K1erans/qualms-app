@@ -14,6 +14,10 @@ export const handle = sequence(authKitHandle(), async ({ event, resolve }) => {
 	try {
 		return await resolve(event);
 	} finally {
-		await closeDb(event);
+		try {
+			await closeDb(event);
+		} catch {
+			console.error("Failed to close database connection");
+		}
 	}
 });
