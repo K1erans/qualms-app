@@ -23,7 +23,8 @@
 	"hyperdrive": [
 		{
 			"binding": "HYPERDRIVE",
-			"id": "1ad5c147f3f54be5a0da0cbb838b2d5a"
+			"id": "1ad5c147f3f54be5a0da0cbb838b2d5a",
+			"localConnectionString": "postgresql://qualms:qualms@localhost:5432/qualms_dev"
 		}
 	]
 }

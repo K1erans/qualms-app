@@ -13,7 +13,12 @@
     "lint": "oxlint && turbo run lint",
     "typecheck": "tsc --noEmit && turbo run typecheck",
     "test": "turbo run test",
-    "db:schema": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push"
+    "preview": "npm run build -w web && npm run preview -w web",
+    "db:up": "brew services start postgresql@18",
+    "db:down": "brew services stop postgresql@18",
+    "db:schema": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
+    "db:studio": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs studio",
+    "db:reset": "dropdb --if-exists qualms_dev && createdb -O qualms qualms_dev && npm run db:schema"
   },
   "devEngines": {
     "packageManager": {

@@ -19,7 +19,7 @@ function trimmedName(value: string | null): string | null {
 }
 
 export function deriveAccountProfile(profile: AuthProfile): DerivedAccountProfile {
-	const handle = profile.email;
+	const handle = profile.email.split("@")[0] ?? profile.email;
 	const names = [trimmedName(profile.firstName), trimmedName(profile.lastName)].filter(
 		(part): part is string => part !== null,
 	);
