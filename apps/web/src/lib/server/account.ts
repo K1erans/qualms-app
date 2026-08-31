@@ -146,7 +146,7 @@ export async function ensureAccount(event: RequestEvent): Promise<ProvisionedAcc
 	if (existing) return existing;
 
 	const user = event.locals.auth?.user ?? null;
-	if (!user) return null;
+	if (!user) throw new Error("Unauthenticated");
 
 	const profile = deriveAccountProfile({
 		email: user.email,
