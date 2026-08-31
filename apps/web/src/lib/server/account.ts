@@ -1,11 +1,13 @@
 import type { RequestEvent } from "@sveltejs/kit";
 import { deriveAccountProfile, type AuthProfile } from "@qualms/core";
+import type { OrganizationKind } from "$lib/shell/types";
 import { getDb, type Sql } from "./db";
 
 export type ProvisionedAccount = {
 	userId: string;
 	organisationId: string;
 	organisationName: string;
+	organisationKind: OrganizationKind;
 	role: string;
 	email: string;
 	name: string | null;
@@ -19,6 +21,7 @@ type AccountRow = {
 	name: string | null;
 	organisation_id: string;
 	organisation_name: string;
+	personal_owner_user_id: string | null;
 	role: string;
 };
 
@@ -33,11 +36,16 @@ type OrganisationRow = {
 	organisation_name: string;
 };
 
+function organisationKindFromOwner(personalOwnerUserId: string | null): OrganizationKind {
+	return personalOwnerUserId === null ? "organisation" : "personal";
+}
+
 function toAccount(row: AccountRow): ProvisionedAccount {
 	return {
 		userId: row.user_id,
 		organisationId: row.organisation_id,
 		organisationName: row.organisation_name,
+		organisationKind: organisationKindFromOwner(row.personal_owner_user_id),
 		role: row.role,
 		email: row.email,
 		name: row.name,
@@ -52,6 +60,7 @@ async function findAccount(sql: Sql, workosUserId: string): Promise<AccountRow |
 			u.name,
 			o.organisation_id::text AS organisation_id,
 			o.organisation_name,
+			o.personal_owner_user_id::text AS personal_owner_user_id,
 			m.role
 		FROM users u
 		JOIN organisations o ON o.personal_owner_user_id = u.user_id
@@ -104,6 +113,7 @@ async function upsertAccount(
 			name: userRow.name,
 			organisation_id: organisationRow.organisation_id,
 			organisation_name: organisationRow.organisation_name,
+			personal_owner_user_id: userRow.user_id,
 			role: "owner",
 		};
 	});

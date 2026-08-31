@@ -14,6 +14,6 @@ export const handle = sequence(authKitHandle(), async ({ event, resolve }) => {
 	try {
 		return await resolve(event);
 	} finally {
-		closeDb(event);
+		await closeDb(event);
 	}
 });

@@ -23,7 +23,7 @@ export function getDb(event: RequestEvent): Sql {
 	return sql;
 }
 
-export function closeDb(event: RequestEvent): void {
+export async function closeDb(event: RequestEvent): Promise<void> {
 	const sql = event.locals.sql;
 	if (!sql) return;
 	event.locals.sql = undefined;
@@ -33,5 +33,5 @@ export function closeDb(event: RequestEvent): void {
 		waitUntil(closed);
 		return;
 	}
-	void closed;
+	await closed;
 }

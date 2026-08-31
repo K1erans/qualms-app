@@ -18,6 +18,6 @@ export const load: LayoutServerLoad = async (event) => {
 
 	return {
 		user,
-		identity: identityFromAuthUser(user, account.organisationName),
+		identity: identityFromAuthUser(user, account.organisationName, account.organisationKind),
 	};
 };
