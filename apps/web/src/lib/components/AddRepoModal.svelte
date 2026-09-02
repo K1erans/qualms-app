@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Search from "@lucide/svelte/icons/search";
 	import { getWorkspace } from "$lib/shell/context";
 	import type { ConnectableRepository } from "$lib/shell/types";
 
@@ -20,6 +21,10 @@
 
 	let personal = $derived(filtered.filter((repo) => repo.kind === "personal"));
 	let orgs = $derived.by(() => groupByOrg(filtered.filter((repo) => repo.kind === "org")));
+
+	function isAdded(repo: ConnectableRepository): boolean {
+		return workspace.registeredRepos.some((item) => item.id === repo.id);
+	}
 
 	function onClose(): void {
 		query = "";
@@ -77,29 +82,27 @@
 			confirmPicked();
 		}}
 	>
-		<h1 id="add-repo-title">Add repository</h1>
-		<p class="hint">Pick a GitHub repository from this dummy account.</p>
-
 		<label class="search">
-			<span class="sr">Search repositories</span>
+			<Search size={16} strokeWidth={2} />
+			<span class="sr" id="add-repo-title">Add repository</span>
 			<input
-				class="input"
 				type="search"
-				placeholder="Search repositories"
+				placeholder="Search your GitHub repositories…"
 				bind:value={query}
 				aria-label="Search repositories"
 			/>
+			<span class="chip">esc</span>
 		</label>
 
-		<div class="list" role="listbox" aria-label="Connectable repositories">
+		<div class="list" role="listbox" aria-label="Repositories you can add">
 			{#if personal.length > 0}
-				<p class="group">Personal</p>
+				<p class="section-label group">Personal</p>
 				{#each personal as repo (repo.id)}
 					{@render row(repo)}
 				{/each}
 			{/if}
 			{#each orgs as group (group.label)}
-				<p class="group">{group.label}</p>
+				<p class="section-label group">{group.label}</p>
 				{#each group.repos as repo (repo.id)}
 					{@render row(repo)}
 				{/each}
@@ -110,11 +113,11 @@
 		</div>
 
 		<div class="actions">
-			<button type="button" class="btn btn-ghost btn-sm" onclick={() => workspace.closeAddModal()}>
+			<button type="button" class="btn btn-ghost" onclick={() => workspace.closeAddModal()}>
 				Cancel
 			</button>
-			<button type="submit" class="btn btn-primary btn-sm" disabled={pickedId === null}>
-				Add
+			<button type="submit" class="btn btn-primary" disabled={pickedId === null}>
+				Add repository
 			</button>
 		</div>
 	</form>
@@ -125,12 +128,18 @@
 		type="button"
 		role="option"
 		aria-selected={pickedId === repo.id}
-		class={["btn btn-ghost option", { picked: pickedId === repo.id }]}
+		class={{ option: true, picked: pickedId === repo.id }}
 		onclick={() => {
 			pickedId = repo.id;
 		}}
 	>
-		<span class="full">{repo.fullName}</span>
-		<span class="desc">{repo.description}</span>
+		<span class="avatar">{repo.owner[0]?.toUpperCase() ?? "?"}</span>
+		<span class="text">
+			<span class="full">{repo.fullName}</span>
+			<span class="desc">{repo.description}</span>
+		</span>
+		{#if isAdded(repo)}
+			<span class="chip">Added</span>
+		{/if}
 	</button>
 {/snippet}

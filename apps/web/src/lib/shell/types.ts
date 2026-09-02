@@ -1,5 +1,7 @@
 export type WorkspaceSurface = "chat" | "tests" | "issues";
 
+export type TestFilter = "all" | "failed" | "passed";
+
 export type RunOutcome = "passed" | "failed";
 
 export type RunTrigger = "app" | "ci";

@@ -435,6 +435,42 @@ export const SEED_THREADS: ChatThread[] = [
 	},
 ];
 
+const SUGGESTIONS = {
+	"repo-checkout": [
+		"Write a test for 3-D Secure challenge vs frictionless",
+		"What isn't covered by T-12, T-14 and T-18 yet?",
+		"Explain finding #41 and how to reproduce it",
+	],
+	"repo-storefront": [
+		"Write a test for cart expiry after 15 minutes",
+		"What isn't covered by T-7 and T-9 yet?",
+		"Explain finding #17 and how to reproduce it",
+	],
+	"repo-notes": [
+		"Write a test for renaming a note while offline",
+		"What isn't covered by T-3 and T-4 yet?",
+		"Explain finding #8 and how to reproduce it",
+	],
+} satisfies Record<string, string[]>;
+
+const DEFAULT_SUGGESTIONS = [
+	"Write a test for the main user flow",
+	"What should we cover first?",
+	"What can an agent check in this repository?",
+];
+
+function hasSuggestions(repositoryId: string): repositoryId is keyof typeof SUGGESTIONS {
+	return Object.hasOwn(SUGGESTIONS, repositoryId);
+}
+
+export function suggestionsForRepository(repositoryId: string): string[] {
+	return hasSuggestions(repositoryId) ? SUGGESTIONS[repositoryId] : DEFAULT_SUGGESTIONS;
+}
+
+export function findingForTest(testId: string): QualmsIssue | null {
+	return QUALMS_ISSUES.find((issue) => issue.testId === testId) ?? null;
+}
+
 export function testsForRepository(repositoryId: string): QualmsTest[] {
 	return QUALMS_TESTS.filter((test) => test.repositoryId === repositoryId);
 }

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import QualmsMark from "./QualmsMark.svelte";
+
 	let { mode }: { mode: "signin" | "signup" } = $props();
 
 	const copy = {
@@ -33,11 +35,14 @@
 </svelte:head>
 
 <div class="auth">
-	<main>
-		<p class="brand">Qualms</p>
+	<main class="card">
+		<p class="brand">
+			<span class="mark"><QualmsMark size={18} /></span>
+			Qualms
+		</p>
 		<h1>{heading}</h1>
 		<p class="lede">{lede}</p>
-		<a href={authHref} class="btn btn-primary github" data-sveltekit-reload>
+		<a href={authHref} class="btn btn-primary btn-lg github" data-sveltekit-reload>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="16"

@@ -8,71 +8,58 @@
 	const identity = $derived(page.data.identity ?? ACCOUNT);
 </script>
 
-<main class="settings" >
-	<header class="top">
-		<div>
-			<h1>Settings</h1>
-			<p class="who">{identity.displayName} · @{identity.handle}</p>
-		</div>
-		<button type="button" class="btn btn-sm" onclick={() => workspace.leaveSettings()}>
-			Back to workspace
-		</button>
-	</header>
+<main class="page settings">
+	<div class="page-inner">
+		<section class="card">
+			<h2>Appearance</h2>
+			<p>Light, dark, or match the system. Kept on this browser.</p>
+			<div class="seg" role="radiogroup" aria-label="Colour scheme">
+				{#each COLOR_SCHEME_OPTIONS as option (option.value)}
+					<button
+						type="button"
+						role="radio"
+						class={{ active: workspace.colorScheme === option.value }}
+						aria-checked={workspace.colorScheme === option.value}
+						onclick={() => workspace.setColorScheme(option.value)}
+					>
+						{option.label}
+					</button>
+				{/each}
+			</div>
+		</section>
 
-	<section>
-		<h2>Appearance</h2>
-		<p>Light, dark, or match the system. Kept on this browser.</p>
-		<div class="join scheme" role="radiogroup" aria-label="Colour scheme">
-			{#each COLOR_SCHEME_OPTIONS as option (option.value)}
-				<input
-					type="radio"
-					class="join-item btn btn-sm"
-					name="colour-scheme"
-					value={option.value}
-					aria-label={option.label}
-					checked={workspace.colorScheme === option.value}
-					onchange={() => workspace.setColorScheme(option.value)}
-				/>
-			{/each}
-		</div>
-	</section>
-
-	<section>
-		<h2>Profile</h2>
-		<dl>
-			<div>
+		<section class="card">
+			<h2>Profile</h2>
+			<dl class="kv">
 				<dt>Name</dt>
 				<dd>{identity.displayName}</dd>
-			</div>
-			<div>
 				<dt>Email</dt>
 				<dd>{identity.email}</dd>
-			</div>
-			<div>
 				<dt>GitHub</dt>
-				<dd>@{identity.handle}</dd>
+				<dd class="mono" style="font-size: 12.5px;">@{identity.handle}</dd>
+				<dt>Organization</dt>
+				<dd>
+					{identity.organization}
+					{#if identity.organizationKind === "personal"}
+						<span class="muted">(personal)</span>
+					{/if}
+				</dd>
+			</dl>
+		</section>
+
+		<section class="card">
+			<h2>Notifications</h2>
+			<p>Findings and test runs will land here. Delivery isn't wired yet.</p>
+		</section>
+
+		<section class="card session">
+			<div>
+				<h2>Session</h2>
+				<p>Signed in on this browser as {identity.displayName}.</p>
 			</div>
-		</dl>
-	</section>
-
-	<section>
-		<h2>Organization</h2>
-		<p>{identity.organization}</p>
-		{#if identity.organizationKind === "personal"}
-			<p>Personal</p>
-		{/if}
-	</section>
-
-	<section>
-		<h2>Notifications</h2>
-		<p>Findings and test runs would land here. Delivery is not wired.</p>
-	</section>
-
-	<section>
-		<h2>Session</h2>
-		<p>Sign out of Qualms on this browser.</p>
-		<form method="POST" action="/logout">
-			<button type="submit" class="btn btn-sm">Sign out</button>
-		</form>
-	</section>
+			<form method="POST" action="/logout">
+				<button type="submit" class="btn">Sign out</button>
+			</form>
+		</section>
+	</div>
 </main>

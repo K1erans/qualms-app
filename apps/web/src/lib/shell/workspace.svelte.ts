@@ -4,7 +4,9 @@ import {
 	SEED_REPOSITORIES,
 	SEED_THREADS,
 	connectableById,
+	findingForTest,
 	issuesForRepository,
+	suggestionsForRepository,
 	testById,
 	testsForRepository,
 	toRegisteredRepository,
@@ -16,6 +18,7 @@ import {
 	writeColorSchemePreference,
 } from "./color-scheme";
 import { readLastUsedRepoId, writeLastUsedRepoId } from "./persistence";
+import { DAY_GROUP_ORDER, type DayGroup, dayGroup } from "./time";
 import type {
 	AccountIdentity,
 	ChatThread,
@@ -23,8 +26,14 @@ import type {
 	QualmsIssue,
 	QualmsTest,
 	RegisteredRepository,
+	TestFilter,
 	WorkspaceSurface,
 } from "./types";
+
+export type ThreadGroup = {
+	label: DayGroup;
+	threads: ChatThread[];
+};
 
 function cloneThreads(threads: ChatThread[]): ChatThread[] {
 	return threads.map((thread) => ({
@@ -56,12 +65,15 @@ export class Workspace {
 	surface = $state<WorkspaceSurface>("chat");
 	settingsOpen = $state(false);
 	addModalOpen = $state(false);
+	switcherOpen = $state(false);
 	sidebarOpen = $state(wideViewport());
-	threadRailOpen = $state(wideViewport());
 	selectedThreadId = $state<string | null>(null);
 	selectedTestId = $state<string | null>(null);
 	selectedIssueId = $state<string | null>(null);
 	draft = $state("");
+	testFilter = $state<TestFilter>("all");
+	testSearch = $state("");
+	queuedRunIds = $state<string[]>([]);
 	lastUsedRestored = $state(false);
 	colorScheme = $state<ColorSchemePreference>("light");
 	schemeListenerAttached = false;
@@ -91,17 +103,88 @@ export class Workspace {
 			.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : 0));
 	});
 
+	threadGroups = $derived.by((): ThreadGroup[] => {
+		const now = Date.now();
+		return DAY_GROUP_ORDER.map((label) => ({
+			label,
+			threads: this.repoThreads.filter((thread) => dayGroup(thread.updatedAt, now) === label),
+		})).filter((group) => group.threads.length > 0);
+	});
+
+	failedCount = $derived(this.repoTests.filter((test) => test.lastOutcome === "failed").length);
+	passedCount = $derived(this.repoTests.filter((test) => test.lastOutcome === "passed").length);
+
+	visibleTests = $derived.by((): QualmsTest[] => {
+		const needle = this.testSearch.trim().toLowerCase();
+		return this.repoTests.filter((test) => {
+			if (this.testFilter !== "all" && test.lastOutcome !== this.testFilter) return false;
+			if (needle === "") return true;
+			return (
+				test.name.toLowerCase().includes(needle) ||
+				test.summary.toLowerCase().includes(needle) ||
+				`t-${test.number}`.includes(needle)
+			);
+		});
+	});
+
 	selectedThread = $derived(
 		this.repoThreads.find((thread) => thread.id === this.selectedThreadId) ?? null,
 	);
+
+	selectedThreadTest = $derived.by((): QualmsTest | null => {
+		const thread = this.selectedThread;
+		if (thread === null || thread.testId === null) return null;
+		return testById(thread.testId);
+	});
 
 	selectedTest = $derived(
 		this.repoTests.find((test) => test.id === this.selectedTestId) ?? null,
 	);
 
+	selectedTestFinding = $derived.by((): QualmsIssue | null => {
+		const test = this.selectedTest;
+		if (test === null) return null;
+		return findingForTest(test.id);
+	});
+
+	selectedTestThread = $derived.by((): ChatThread | null => {
+		const test = this.selectedTest;
+		if (test === null) return null;
+		return this.threads.find((thread) => thread.id === test.threadId) ?? null;
+	});
+
 	selectedIssue = $derived(
 		this.repoIssues.find((issue) => issue.id === this.selectedIssueId) ?? null,
 	);
+
+	selectedIssueTest = $derived.by((): QualmsTest | null => {
+		const issue = this.selectedIssue;
+		if (issue === null) return null;
+		return testById(issue.testId);
+	});
+
+	selectedIssueThread = $derived.by((): ChatThread | null => {
+		const test = this.selectedIssueTest;
+		if (test === null) return null;
+		return this.threads.find((thread) => thread.id === test.threadId) ?? null;
+	});
+
+	suggestions = $derived.by((): string[] => {
+		if (this.selectedRepoId === null) return [];
+		return suggestionsForRepository(this.selectedRepoId);
+	});
+
+	openFindingCount(repositoryId: string): number {
+		return issuesForRepository(repositoryId).length;
+	}
+
+	testForIssue(issue: QualmsIssue): QualmsTest | null {
+		return testById(issue.testId);
+	}
+
+	isRunQueued(testId: string): boolean {
+		return this.queuedRunIds.includes(testId);
+	}
 
 	restoreLastUsed(): void {
 		if (this.lastUsedRestored) return;
@@ -132,10 +215,13 @@ export class Workspace {
 		this.selectedRepoId = repositoryId;
 		this.surface = "chat";
 		this.settingsOpen = false;
+		this.switcherOpen = false;
 		this.selectedTestId = null;
 		this.selectedIssueId = null;
-		this.closeOverlaysIfCompact();
+		this.testFilter = "all";
+		this.testSearch = "";
 		this.draft = "";
+		this.closeOverlaysIfCompact();
 		writeLastUsedRepoId(repositoryId);
 		const repoThreads = this.threads.filter((thread) => thread.repositoryId === repositoryId);
 		this.selectedThreadId = newestThreadId(repoThreads);
@@ -147,12 +233,13 @@ export class Workspace {
 		this.settingsOpen = false;
 		this.selectedTestId = null;
 		this.selectedIssueId = null;
-		if (compactViewport()) this.threadRailOpen = false;
+		this.closeOverlaysIfCompact();
 	}
 
 	openSettings(): void {
 		this.settingsOpen = true;
 		this.addModalOpen = false;
+		this.switcherOpen = false;
 		this.closeOverlaysIfCompact();
 	}
 
@@ -160,8 +247,17 @@ export class Workspace {
 		this.settingsOpen = false;
 	}
 
+	toggleSwitcher(): void {
+		this.switcherOpen = !this.switcherOpen;
+	}
+
+	closeSwitcher(): void {
+		this.switcherOpen = false;
+	}
+
 	openAddModal(): void {
 		this.addModalOpen = true;
+		this.switcherOpen = false;
 		if (compactViewport()) this.sidebarOpen = false;
 	}
 
@@ -189,12 +285,30 @@ export class Workspace {
 		this.selectedThreadId = threadId;
 		this.surface = "chat";
 		this.settingsOpen = false;
-		if (compactViewport()) this.threadRailOpen = false;
+		this.selectedTestId = null;
+		this.selectedIssueId = null;
+		this.closeOverlaysIfCompact();
+	}
+
+	newChat(): void {
+		if (this.selectedRepoId === null) return;
+		this.selectedThreadId = null;
+		this.surface = "chat";
+		this.settingsOpen = false;
+		this.selectedTestId = null;
+		this.selectedIssueId = null;
+		this.draft = "";
+		this.closeOverlaysIfCompact();
+	}
+
+	useSuggestion(text: string): void {
+		this.draft = text;
 	}
 
 	openTest(testId: string): void {
 		this.surface = "tests";
 		this.selectedTestId = testId;
+		this.selectedIssueId = null;
 		this.settingsOpen = false;
 	}
 
@@ -202,9 +316,19 @@ export class Workspace {
 		this.selectedTestId = null;
 	}
 
+	setTestFilter(filter: TestFilter): void {
+		this.testFilter = filter;
+	}
+
+	queueRun(testId: string): void {
+		if (this.queuedRunIds.includes(testId)) return;
+		this.queuedRunIds.push(testId);
+	}
+
 	openIssue(issueId: string): void {
 		this.surface = "issues";
 		this.selectedIssueId = issueId;
+		this.selectedTestId = null;
 		this.settingsOpen = false;
 	}
 
@@ -215,8 +339,14 @@ export class Workspace {
 	openTestConversation(testId: string): void {
 		const test = testById(testId);
 		if (test === null) return;
-		this.selectRepository(test.repositoryId);
+		if (test.repositoryId !== this.selectedRepoId) this.selectRepository(test.repositoryId);
 		this.selectThread(test.threadId);
+	}
+
+	openIssueConversation(issueId: string): void {
+		const issue = this.repoIssues.find((item) => item.id === issueId) ?? null;
+		if (issue === null) return;
+		this.openTestConversation(issue.testId);
 	}
 
 	openSidebar(): void {
@@ -225,28 +355,18 @@ export class Workspace {
 
 	closeSidebar(): void {
 		this.sidebarOpen = false;
+		this.switcherOpen = false;
 	}
 
 	toggleSidebar(): void {
-		this.sidebarOpen = !this.sidebarOpen;
-	}
-
-	openThreadRail(): void {
-		this.threadRailOpen = true;
-	}
-
-	closeThreadRail(): void {
-		this.threadRailOpen = false;
-	}
-
-	toggleThreadRail(): void {
-		this.threadRailOpen = !this.threadRailOpen;
+		if (this.sidebarOpen) this.closeSidebar();
+		else this.openSidebar();
 	}
 
 	closeOverlaysIfCompact(): void {
 		if (!compactViewport()) return;
 		this.sidebarOpen = false;
-		this.threadRailOpen = false;
+		this.switcherOpen = false;
 	}
 
 	sendDraft(): void {
@@ -295,7 +415,7 @@ function titleFromDraft(text: string): string {
 
 function assistantReply(thread: ChatThread): string {
 	if (thread.testNumber !== null) {
-		return `I’ll keep drafting T-${thread.testNumber} for an agent to take. This is dummy Qualms chat — nothing is running yet.`;
+		return `I’ll fold that into T-${thread.testNumber}. Nothing runs yet — this is dummy Qualms chat — but in the real app I’d update the test definition and CI would pick it up on the next run.`;
 	}
-	return "I’ll keep this on the repo. Tell me the behavior an agent should check and I can draft a Qualms test for it.";
+	return "Got it. Tell me what the agent should do step by step and what a pass looks like, and I’ll write it up as a test you can run from here or from CI.";
 }

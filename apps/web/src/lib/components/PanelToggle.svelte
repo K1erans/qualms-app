@@ -17,17 +17,17 @@
 	const label = $derived(
 		side === "left"
 			? expanded
-				? "Hide repositories"
-				: "Show repositories"
+				? "Hide sidebar"
+				: "Show sidebar"
 			: expanded
-				? "Hide chats"
-				: "Show chats",
+				? "Hide panel"
+				: "Show panel",
 	);
 </script>
 
 <button
 	type="button"
-	class="btn btn-ghost btn-square btn-sm panel-toggle"
+	class="btn btn-ghost btn-icon panel-toggle"
 	aria-label={label}
 	aria-expanded={expanded}
 	aria-controls={controls}
